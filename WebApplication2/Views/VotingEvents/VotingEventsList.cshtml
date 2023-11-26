@@ -1,0 +1,50 @@
+﻿@using WebApplication2.Models
+@model IEnumerable<VotingEvent>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Сайт для голосования</title>
+</head>
+<body>
+
+    <div class="header">
+        <div class="conteiner-header">
+            <a href="login.html" class="back-arrow">&#8592;</a>
+
+
+            <h1></h1>
+            <!-- Белый квадрат с ссылкой -->
+            <a href="profil.html" class="link-square"></a>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <!-- Используем <a> для создания ссылки -->
+        <a asp-controller="VotingEventCreation" asp-action="VotingEventCreate" class="square">
+            <p>Создать новую конференцию</p>
+        </a>
+        @{
+            foreach (var votingEvent in Model)
+            {
+                <a asp-controller="Projects" asp-action="ProjectsList" class="square">
+                    @votingEvent.Name
+                </a>
+
+            }
+        }
+    </div>
+
+    <div class="footer">
+        <p></p>
+    </div>
+
+</body>
+</html>

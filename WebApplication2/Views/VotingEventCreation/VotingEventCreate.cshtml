@@ -1,0 +1,78 @@
+﻿@using WebApplication2.Models
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт для голосования</title>
+</head>
+<body>
+
+    <div class="header">
+        <div class="conteiner-header">
+            <a href="main-page.html" class="back-arrow">&#8592;</a>
+            <h1 class="titel">Создать новый проект</h1>
+        </div>
+    </div>
+
+    <div class="container-cp">
+        <form>
+            <div class="form-group">
+                <label for="projectName">Название проекта:</label>
+                <input type="text" id="projectName" name="projectName" required>
+            </div>
+
+            <div class="form-group">
+                <label for="theme">Тема:</label>
+                <input type="text" id="theme" name="theme" required>
+            </div>
+
+            <div class="form-group">
+                <label for="venue">Место проведения:</label>
+                <input type="text" id="venue" name="venue" required>
+            </div>
+
+            <div class="form-group">
+                <label for="time">Время проведения:</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+
+            <div class="form-group">
+                <label for="participants">Команды:</label>
+                <!-- Team section with team names and add team link -->
+                <div class="team-section">
+                    <input type="text" id="team1" name="team1" class="team-name" placeholder="Команда 1" required>
+                    <div class="add-team-link">
+                        <a href="create-team.html"> Создать команду </a>
+                    </div>
+                </div>
+                <!-- Repeat this structure for other teams -->
+                <div class="team-section">
+                    <input type="text" id="team2" name="team2" class="team-name" placeholder="Команда 2" required>
+                    <div class="add-team-link">
+                        <a href="create-team.html">Создать команду</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="add-audience">Добавить зрителей</label>
+                    <input type="text" id="add-audience" name="add-audience" required>
+                </div>
+                <!-- Repeat as needed -->
+            </div>
+
+            <div class="form-group">
+                <button type="submit">Создать проект</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p></p>
+    </div>
+
+</body>
+</html>

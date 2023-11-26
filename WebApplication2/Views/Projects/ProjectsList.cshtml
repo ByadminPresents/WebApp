@@ -1,0 +1,73 @@
+﻿@using WebApplication2.Models
+@model IEnumerable<Project>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт для голосования</title>
+</head>
+<body>
+
+    <div class="header">
+        <div class="conteiner-header">
+            <a href="main-page.html" class="back-arrow">&#8592;</a>
+            <a href="vote.html"> Страница для голосования </a>
+            <h1 class="titel">Страница проекта </h1>
+        </div>
+    </div>
+
+    <div class="container-vote">
+        <!-- Team container -->
+        <div class="team-container">
+            @{
+                int count = 0;
+                foreach (var project in Model)
+                {
+                    count++;
+                    <div class="team-square">
+                        <p>Команда @count</p>
+                        <p>Тема доклада @project.Name</p>
+                        <p>Участники:</p>
+                        @{
+                            for (int i = 0; i < project.Participants.Count; i++)
+                            {
+                                if (i == 0)
+                                {
+                                    <p>
+                                        @project.Participants[i].Name
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p>
+                                        , <br />
+                                        @project.Participants[i].Name
+                                    </p>
+                                }
+                            }
+                        }
+                        <p>Голосов: TODO</p>
+                    </div>
+                }
+            }
+            <!-- Add more team squares as needed -->
+        </div>
+
+        <!-- Vote diagram square -->
+        <div class="vote-diagram">
+            <p>Диаграмм Голосование</p>
+            <!-- Add your hypothetical vote diagram here -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <p></p>
+    </div>
+
+</body>
+</html>

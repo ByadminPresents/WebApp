@@ -1,0 +1,268 @@
+﻿
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    background-color: rgb(179, 214, 236);
+    padding: 20px;
+    text-align: center;
+    color: white;
+    justify-content: space-between;
+}
+
+.conteiner-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.link-square {
+    margin-top: 5px;
+}
+
+.back-arrow {
+    font-size: 35px;
+    margin-right: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+}
+
+.link-square {
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+
+.container {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    flex-direction: row;
+}
+
+
+.square {
+    flex: 0 0 calc(25% - 35px);
+    height: 200px;
+    background-color: lightgray;
+    margin: 5px;
+    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* Устанавливаем относительное позиционирование для .square */
+}
+
+.plus {
+    position: absolute; /* Абсолютное позиционирование для .plus внутри .square */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Центрируем .plus по центру .square */
+    width: 70%;
+    height: 10%;
+    background-color: white;
+}
+
+.footer {
+    background-color: rgb(179, 214, 236);
+    padding: 20px;
+    text-align: center;
+    color: white;
+    margin-top: auto;
+}
+
+.titel {
+    margin-right: 150px;
+}
+
+.profile-picture {
+    width: 250px;
+    height: 250px;
+    background: #c4ced7;
+    border-radius: 50%;
+}
+
+.details {
+    margin-left: 0px;
+    margin-top: 50px;
+}
+
+.container-log {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.info {
+    margin-top: 280px;
+}
+
+.form-group {
+    flex: 0 0 100%;
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+.team-section {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+
+.team-name {
+    width: 80%;
+}
+
+.add-team-link {
+    width: 20%;
+    text-align: center;
+}
+
+    .add-team-link a {
+        text-decoration: none;
+        color: black;
+    }
+
+        .add-team-link a:hover {
+            text-decoration: underline;
+        }
+
+.container-cp {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 400px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.login-button {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: rgb(159, 193, 214);
+    color: white;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.container-login {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.titel1 {
+    margin-right: 0px;
+}
+
+.team-container {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+}
+
+.team-square {
+    flex: 0 0 calc(33.33% - 20px);
+    background-color: lightgray;
+    height: 200px;
+    width: 200px;
+    margin: 10px;
+    position: relative;
+}
+
+    .team-square p {
+        text-align: center;
+        margin: 5px;
+    }
+
+.vote-diagram {
+    /* flex: 0 0 calc(66.66% - 20px); */
+    background-color: lightgray;
+    margin: 10px;
+    width: 350px;
+    position: relative;
+    height: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .vote-diagram p {
+        text-align: center;
+        margin: 5px;
+    }
+
+.container-vote {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.prog-vote {
+    width: 200px;
+    height: 200px;
+    background-color: lightgray;
+    margin-top: 100px;
+}
+
+.score-case {
+    display: flex;
+}
+
+.score {
+    flex: 0 0 calc(25% - 35px);
+    height: 100px;
+    background-color: lightgray;
+    margin: 5px;
+    margin-top: 20px;
+    position: relative;
+    width: 100px;
+}
