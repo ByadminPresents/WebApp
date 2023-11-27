@@ -1,3 +1,5 @@
+using WebApplication2.DB;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +9,7 @@ builder.Services.AddSingleton<IApplicationBuilder, ApplicationBuilder>();
 builder.Services.AddMvc();
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
-
+builder.Services.AddDbContext<WebappDbContext>();
 
 var app = builder.Build();
 

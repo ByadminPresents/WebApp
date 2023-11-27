@@ -6,30 +6,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication2.Models;
 
-[Table("Participant")]
-public partial class Participant
+[Table("Vote")]
+public partial class Vote
 {
     [Key]
     [Column("id")]
     public int Id { get; set; }
 
-    [Column("name")]
-    [StringLength(60)]
-    [Unicode(false)]
-    public string Name { get; set; } = null!;
-
-    [Column("email")]
-    [StringLength(100)]
-    public string Email { get; set; } = null!;
-
-    [Column("unique_key")]
-    [StringLength(150)]
-    public string UniqueKey { get; set; } = null!;
+    [Column("score")]
+    public int Score { get; set; }
 
     [Column("project_id")]
     public int ProjectId { get; set; }
 
+    [Column("viewer_id")]
+    public int ViewerId { get; set; }
+
     [ForeignKey("ProjectId")]
-    [InverseProperty("Participants")]
+    [InverseProperty("Votes")]
     public virtual Project Project { get; set; } = null!;
+
+    [ForeignKey("ViewerId")]
+    [InverseProperty("Votes")]
+    public virtual Viewer Viewer { get; set; } = null!;
 }

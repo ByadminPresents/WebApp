@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication2.Models;
 
-[Table("Participant")]
-public partial class Participant
+[Table("Organizer")]
+public partial class Organizer
 {
     [Key]
     [Column("id")]
@@ -22,14 +22,10 @@ public partial class Participant
     [StringLength(100)]
     public string Email { get; set; } = null!;
 
-    [Column("unique_key")]
-    [StringLength(150)]
-    public string UniqueKey { get; set; } = null!;
+    [Column("password")]
+    [StringLength(50)]
+    public string Password { get; set; } = null!;
 
-    [Column("project_id")]
-    public int ProjectId { get; set; }
-
-    [ForeignKey("ProjectId")]
-    [InverseProperty("Participants")]
-    public virtual Project Project { get; set; } = null!;
+    [InverseProperty("Organizer")]
+    public virtual ICollection<VotingEvent> VotingEvents { get; set; } = new List<VotingEvent>();
 }

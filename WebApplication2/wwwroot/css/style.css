@@ -16,7 +16,7 @@ body {
     justify-content: space-between;
 }
 
-.conteiner-header {
+.container-header {
     display: flex;
     justify-content: space-between;
 }
@@ -83,7 +83,7 @@ body {
     margin-top: auto;
 }
 
-.titel {
+.title {
     margin-right: 150px;
 }
 

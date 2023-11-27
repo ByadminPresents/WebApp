@@ -1,9 +1,9 @@
-﻿using WebApplication2.Models;
+﻿using WebApplication2.Unused;
 
 namespace WebApplication2.Interfaces
 {
     public interface IAllParticipants
     {
-        IEnumerable<Participant> AllParticipants { get; }
+        //IEnumerable<Participant> AllParticipants { get; }
     }
 }

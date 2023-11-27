@@ -1,9 +1,9 @@
-﻿using WebApplication2.Models;
+﻿using WebApplication2.Unused;
 
 namespace WebApplication2.Interfaces
 {
     public interface IAllViewers
     {
-        IEnumerable<Viewer> AllViewers { get; }
+        //IEnumerable<Viewer> AllViewers { get; }
     }
 }

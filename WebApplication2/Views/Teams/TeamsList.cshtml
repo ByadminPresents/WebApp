@@ -14,7 +14,7 @@
 <body>
 
     <div class="header">
-        <div class="conteiner-header">
+        <div class="container-header">
             <a href="main-page.html" class="back-arrow">&#8592;</a>
             <a href="vote.html"> Страница для голосования </a>
             <h1 class="titel">Страница проекта </h1>
@@ -26,27 +26,27 @@
         <div class="team-container">
             @{
                 int count = 0;
-                foreach (var project in Model)
+                foreach (var team in Model)
                 {
                     count++;
                     <div class="team-square">
                         <p>Команда @count</p>
-                        <p>Тема доклада @project.Name</p>
+                        <p>Тема доклада @team.Title</p>
                         <p>Участники:</p>
                         @{
-                            for (int i = 0; i < project.Participants.Count; i++)
+                            for (int i = 0; i < team.Participants.Count; i++)
                             {
                                 if (i == 0)
                                 {
                                     <p>
-                                        @project.Participants[i].Name
+                                        @team.Participants.ToList().[i].Name
                                     </p>
                                 }
                                 else
                                 {
                                     <p>
                                         , <br />
-                                        @project.Participants[i].Name
+                                        @team.Participants.ToList().[i].Name
                                     </p>
                                 }
                             }

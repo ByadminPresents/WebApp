@@ -1,20 +1,20 @@
 ﻿using WebApplication2.Interfaces;
-using WebApplication2.Models;
+using WebApplication2.Unused;
 
 namespace WebApplication2.mocks
 {
-    public class MockProject : IAllProjects
+    public class MockTeam
     {
-        private readonly IAllParticipants _allParticipants = new MockParticipant();
-        public IEnumerable<Project> AllProjects
-        {
-            get
-            {
-                return new List<Project>
-                {
-                    new Project() { Id = 1, Name = "Название проекта", Participants = _allParticipants.AllParticipants.ToList()}
-                };
-            }
-        }
+        //private readonly IAllParticipants _allParticipants = new MockParticipant();
+        //public IEnumerable<Team> AllTeams
+        //{
+        //    get
+        //    {
+        //        return new List<Team>
+        //        {
+        //            new Team() { Id = 1, ProjectName = "Название проекта", Participants = _allParticipants.AllParticipants.ToList()}
+        //        };
+        //    }
+        //}
     }
 }
