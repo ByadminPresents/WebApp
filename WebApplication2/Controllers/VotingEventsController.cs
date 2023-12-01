@@ -7,9 +7,9 @@ namespace WebApplication2.Controllers
     public class VotingEventsController : Controller
     {
         private readonly WebappDbContext _context;
-        public VotingEventsController(WebappDbContext context) 
-        { 
-            _context = context; 
+        public VotingEventsController(WebappDbContext context)
+        {
+            _context = context;
         }
         public ViewResult VotingEventsList()
         {
@@ -25,14 +25,11 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> VotingEventCreate(VotingEvent votingEvent)
         {
-            if (ModelState.IsValid)
-            {
-                //throw new Exception();
-                _context.Add(votingEvent);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(votingEvent);
+            votingEvent.OrganizerId = 1;
+            _context.VotingEvents.Add(votingEvent);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(VotingEventsList));
+            //return View(votingEvent);
         }
     }
 }

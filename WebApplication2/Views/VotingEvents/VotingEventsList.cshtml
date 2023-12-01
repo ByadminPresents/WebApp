@@ -34,7 +34,7 @@
         @{
             foreach (var votingEvent in Model)
             {
-                <a asp-controller="Teams" asp-action="TeamsList" class="square">
+                <a asp-controller="Teams" asp-action="TeamsList" asp-route-votingEventId="@votingEvent.Id" class="square">
                     @votingEvent.Name
                 </a>
 

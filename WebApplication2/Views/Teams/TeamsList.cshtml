@@ -1,5 +1,5 @@
 ﻿@using WebApplication2.Models
-@model IEnumerable<Project>
+@model VotingEvent
 @{
     Layout = null;
 }
@@ -24,9 +24,12 @@
     <div class="container-vote">
         <!-- Team container -->
         <div class="team-container">
+            <a asp-controller="Teams" asp-action="TeamCreateView" asp-route-votingEventId="@Model.Id" class="team-square">
+                <p>Добавить команду</p>
+            </a>
             @{
                 int count = 0;
-                foreach (var team in Model)
+                foreach (var team in Model.Projects)
                 {
                     count++;
                     <div class="team-square">

@@ -6,9 +6,9 @@
     "mssql1": {
       "serviceConnectorResourceId": "",
       "secretStore": "LocalSecretsFile",
+      "resourceId": null,
       "type": "mssql.onprem",
-      "connectionId": "ConnectionStrings:Connection",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:WEBAppDB"
     }
   }
 }

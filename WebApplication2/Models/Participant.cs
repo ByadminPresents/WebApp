@@ -20,7 +20,7 @@ public partial class Participant
 
     [Column("email")]
     [StringLength(100)]
-    public string Email { get; set; } = null!;
+    public string? Email { get; set; } = null;
 
     [Column("unique_key")]
     [StringLength(150)]
