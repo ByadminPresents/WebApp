@@ -17,7 +17,7 @@
         <div class="container-header">
             <a href="main-page.html" class="back-arrow">&#8592;</a>
             <a href="vote.html"> Страница для голосования </a>
-            <h1 class="titel">Страница проекта </h1>
+            <h1 class="title">@Model.Name</h1>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
         <!-- Team container -->
         <div class="team-container">
             <a asp-controller="Teams" asp-action="TeamCreateView" asp-route-votingEventId="@Model.Id" class="team-square">
-                <p>Добавить команду</p>
+                <p style="font-weight: bold;">Добавить команду</p>
             </a>
             @{
                 int count = 0;
@@ -33,28 +33,29 @@
                 {
                     count++;
                     <div class="team-square">
-                        <p>Команда @count</p>
-                        <p>Тема доклада @team.Title</p>
-                        <p>Участники:</p>
+                        <p style="font-weight: bold;">Команда @count</p>
+                        <p style="font-weight: bold;">Название проекта:</p>
+                        <p>"@team.Title"</p>
+                        <p style="font-weight: bold;">Участники:</p>
                         @{
+                            var participants = team.Participants.ToList();
                             for (int i = 0; i < team.Participants.Count; i++)
                             {
                                 if (i == 0)
                                 {
                                     <p>
-                                        @team.Participants.ToList().[i].Name
+                                        @(i + 1)) @participants[i].Name
                                     </p>
                                 }
                                 else
                                 {
                                     <p>
-                                        , <br />
-                                        @team.Participants.ToList().[i].Name
+                                        @(i + 1)) @participants[i].Name
                                     </p>
                                 }
                             }
                         }
-                        <p>Голосов: TODO</p>
+                        <p style="font-weight: bold;">Голосов: @ViewBag.TotalVotes[count - 1]</p>
                     </div>
                 }
             }
@@ -63,7 +64,7 @@
 
         <!-- Vote diagram square -->
         <div class="vote-diagram">
-            <p>Диаграмм Голосование</p>
+            <p>Диаграмма голосования</p>
             <!-- Add your hypothetical vote diagram here -->
         </div>
     </div>

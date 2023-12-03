@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication2.DB;
 using WebApplication2.Models;
 
@@ -13,7 +14,7 @@ namespace WebApplication2.Controllers
         }
         public ViewResult VotingEventsList()
         {
-            var votingEvents = _context.VotingEvents;
+            var votingEvents = _context.VotingEvents.Include(e => e.Projects).Where(e => e.OrganizerId == 1);
             return View(votingEvents);
         }
 

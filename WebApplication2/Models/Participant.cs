@@ -18,18 +18,24 @@ public partial class Participant
     [Unicode(false)]
     public string Name { get; set; } = null!;
 
-    [Column("email")]
-    [StringLength(100)]
-    public string? Email { get; set; } = null;
+    [Column("email_id")]
+    public int? EmailId { get; set; }
 
-    [Column("unique_key")]
-    [StringLength(150)]
-    public string UniqueKey { get; set; } = null!;
+    [Column("uniqueKey_id")]
+    public int? UniqueKeyId { get; set; }
 
     [Column("project_id")]
     public int ProjectId { get; set; }
 
+    [ForeignKey("EmailId")]
+    [InverseProperty("Participants")]
+    public virtual Email? Email { get; set; }
+
     [ForeignKey("ProjectId")]
     [InverseProperty("Participants")]
     public virtual Project Project { get; set; } = null!;
+
+    [ForeignKey("UniqueKeyId")]
+    [InverseProperty("Participants")]
+    public virtual UniqueKey? UniqueKey { get; set; }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using WebApplication2.DB;
-using WebApplication2.mocks;
 using WebApplication2.Models;
 
 namespace WebApplication2.Controllers
@@ -13,10 +14,23 @@ namespace WebApplication2.Controllers
             _context = context;
         }
 
+        [HttpGet]
         public IActionResult TeamsList(int votingEventId)
         {
-            return View(_context.VotingEvents.Find(votingEventId));
+            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Projects).ThenInclude(e => e.Participants).Include(e => e.Projects).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+            if (votingEvent != null)
+            {
+                var totalVotes = new List<double>();
+                foreach(var x in votingEvent.Projects)
+                {
+                    totalVotes.Add(x.Votes.Count);
+                }
+                ViewBag.TotalVotes = totalVotes;
+                return View(votingEvent);
+            }
+            return View(nameof(HomeController));
         }
+
 
         [HttpGet]
         public IActionResult TeamCreateView(int votingEventId)
@@ -27,33 +41,51 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> TeamCreate(Project project)
         {
-            _context.Projects.Add(project);
-            _context.SaveChanges();
-            var uniqueKeys = new string[project.Participants.Count];
             for (int i = 0; i < project.Participants.Count; i++)
             {
-                uniqueKeys[i] = Guid.NewGuid().ToString();
+                if (project.Participants.ToArray()[i].Name == null || project.Participants.ToArray()[i].Name == "")
+                project.Participants.Remove(project.Participants.ToArray()[i]);
             }
-            foreach (var x in _context.Participants)
+
+            _context.Projects.Add(project);
+
+            var uniqueKeys = new UniqueKey[project.Participants.Count];
+
+            for (int i = 0; i < project.Participants.Count; i++)
             {
-                for (int i = 0; i < uniqueKeys.Length; i++)
-                {
-                    while (x.UniqueKey == uniqueKeys[i])
-                    {
-                        uniqueKeys[i] = Guid.NewGuid().ToString();
-                    }
-                }
+                uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = Guid.NewGuid().ToString() };
+                //uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = "not_unique_key" };
             }
+
+            foreach (UniqueKey x in uniqueKeys)
+            {
+                bool identityFlag = true;
+                do
+                {
+                    identityFlag = true;
+                    try
+                    {
+                        _context.UniqueKeys.Add(x);
+                        _context.SaveChanges();
+                    }
+                    catch
+                    {
+                        identityFlag = false;
+                        x.UniqueKeyValue = Guid.NewGuid().ToString();
+                    }
+                } while (!identityFlag);
+            }
+
             int count = 0;
             foreach (var x in project.Participants)
             {
-                x.UniqueKey = uniqueKeys[count];
-                x.ProjectId = project.Id;
-                _context.Participants.Add(x);
+                x.UniqueKeyId = uniqueKeys[count].Id;
+                _context.Update(x);
                 count++;
             }
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(TeamsList));
+
+            _context.SaveChanges();
+            return RedirectToAction("TeamsList", new { votingEventId = project.VotingEventId });
         }
     }
 }

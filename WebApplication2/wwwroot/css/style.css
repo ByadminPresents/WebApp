@@ -1,11 +1,11 @@
 ﻿
 body {
-    margin: 0;
+/*    margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 100vh;*/
 }
 
 .header {
@@ -53,16 +53,18 @@ body {
     flex-direction: row;
 }
 
-
 .square {
     flex: 0 0 calc(25% - 35px);
     height: 200px;
     background-color: lightgray;
     margin: 5px;
     margin-top: 20px;
+    display: flex;
     justify-content: center;
     align-items: center;
     position: relative; /* Устанавливаем относительное позиционирование для .square */
+    text-decoration: none;
+    color: black;
 }
 
 .plus {
@@ -193,7 +195,7 @@ body {
     flex-direction: row;
 }
 
-.titel1 {
+.title1 {
     margin-right: 0px;
 }
 
@@ -213,12 +215,23 @@ body {
     height: 200px;
     width: 200px;
     margin: 10px;
-    position: relative;
+    /*position: relative;*/
+    text-decoration: none;
+    color: black;
+    display: flex;
+    justify-content: center;
+    flex-wrap: unset;
+    flex-direction:column;
+    align-items: center;
+    overflow: hidden;
+    /*text-align: center;*/
 }
 
     .team-square p {
-        text-align: center;
-        margin: 5px;
+        /*        text-align: center;
+        margin: 5px;*/
+        flex: 0 0 20px;
+        margin: 0px;
     }
 
 .vote-diagram {

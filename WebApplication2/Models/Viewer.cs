@@ -18,17 +18,22 @@ public partial class Viewer
     [Unicode(false)]
     public string Name { get; set; } = null!;
 
-    [Column("email")]
-    [StringLength(100)]
-    [Unicode(false)]
-    public string Email { get; set; } = null!;
+    [Column("email_id")]
+    public int EmailId { get; set; }
 
-    [Column("unique_key")]
-    [StringLength(150)]
-    public string? UniqueKey { get; set; }
+    [Column("uniqueKey_id")]
+    public int? UniqueKeyId { get; set; }
 
     [Column("votingEvent_id")]
     public int VotingEventId { get; set; }
+
+    [ForeignKey("EmailId")]
+    [InverseProperty("Viewers")]
+    public virtual Email Email { get; set; } = null!;
+
+    [ForeignKey("UniqueKeyId")]
+    [InverseProperty("Viewers")]
+    public virtual UniqueKey? UniqueKey { get; set; }
 
     [InverseProperty("Viewer")]
     public virtual ICollection<Vote> Votes { get; set; } = new List<Vote>();
