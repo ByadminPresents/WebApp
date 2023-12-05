@@ -3,3 +3,75 @@
 @{
     Layout = null;
 }
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт для голосования</title>
+</head>
+<body>
+
+    <div class="header">
+        <div class="container-header">
+            <a href="" class="back-arrow">&#8592;</a>
+            <h1 class="title">Редактирование команды: @Model.Title</h1>
+        </div>
+    </div>
+
+    <div class="container-cp">
+        <form asp-action="TeamCreate" method="post">
+            <input asp-for="VotingEventId" type="hidden" />
+            <label asp-for="Title"></label>
+            <div class="form-group">
+                <label for="title">Название проекта:</label>
+                <input asp-for="Title" required>
+                <span asp-validation-for="Title"></span>
+            </div>
+            <label asp-for="Description"></label>
+            <div class="form-group">
+                <label for="description">Описание:</label>
+                <input asp-for="Description" required>
+                <span asp-validation-for="Description"></span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>email</th>
+                    </tr>
+                </thead>
+                <tbody id="ParticipantList" data-count="0">
+                    <tr>
+                        <td><input type="text" name="Participants[0].Name" class="form-control" /></td>
+                        <td><input type="text" name="Participants[0].Email" class="form-control" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate"></button>
+            <input type="submit" value="Создать конференцию" />
+        </form>
+    </div>
+
+    <div class="footer">
+        <p></p>
+    </div>
+</body>
+</html>
+
+<script src="@Url.Content("~/lib/jquery/dist/jquery.js")" type="text/javascript"></script>
+<script>
+    function AddRow() {
+        var countVal = parseInt($('#ParticipantList').attr('data-count'));
+        countVal += 1;
+        var html = '';
+        html += '<tr>';
+        html += '<td><input type="text" name="Participants[' + countVal + '].Name" class="form-control"/></td>';
+        html += '<td><input type="text" name="Participants[' + countVal + '].Email" class="form-control"/></td>';
+        html += '</tr>';
+        $('#ParticipantList').append(html);
+        $('#ParticipantList').attr('data-count', countVal);
+    }
+</script>

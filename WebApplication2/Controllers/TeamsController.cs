@@ -14,22 +14,22 @@ namespace WebApplication2.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult TeamsList(int votingEventId)
-        {
-            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Projects).ThenInclude(e => e.Participants).Include(e => e.Projects).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
-            if (votingEvent != null)
-            {
-                var totalVotes = new List<double>();
-                foreach(var x in votingEvent.Projects)
-                {
-                    totalVotes.Add(x.Votes.Count);
-                }
-                ViewBag.TotalVotes = totalVotes;
-                return View(votingEvent);
-            }
-            return View(nameof(HomeController));
-        }
+        //[HttpGet]
+        //public IActionResult TeamsList(int votingEventId)
+        //{
+        //    VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Projects).ThenInclude(e => e.Participants).Include(e => e.Projects).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+        //    if (votingEvent != null)
+        //    {
+        //        var totalVotes = new List<double>();
+        //        foreach(var x in votingEvent.Projects)
+        //        {
+        //            totalVotes.Add(x.Votes.Count);
+        //        }
+        //        ViewBag.TotalVotes = totalVotes;
+        //        return View(votingEvent);
+        //    }
+        //    return View(nameof(HomeController));
+        //}
 
 
         [HttpGet]
@@ -85,7 +85,7 @@ namespace WebApplication2.Controllers
             }
 
             _context.SaveChanges();
-            return RedirectToAction("TeamsList", new { votingEventId = project.VotingEventId });
+            return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = project.VotingEventId });
         }
     }
 }
