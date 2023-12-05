@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace WebApplication2.Models;
 
 [Table("Email")]
-[Index("EmailValue", Name = "IX_Email", IsUnique = true)]
 public partial class Email
 {
     [Key]

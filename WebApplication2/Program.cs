@@ -10,6 +10,7 @@ builder.Services.AddMvc();
 builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddDbContext<WebappDbContext>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -43,6 +44,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=VotingEvents}/{action=VotingEventsList}/{id?}");
+    pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
 
 app.Run();

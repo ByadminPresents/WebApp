@@ -19,14 +19,16 @@
         </div>
     </div>
 
-    @using (Html.BeginForm("Login", "Login", FormMethod.Post))
-    {
-        <label>Логин: </label>
-        <input name="Login" type="text" required>
-        <label>Пароль: </label>
-        <input name="Passsword" type="text" required>
-        <input type="submit" value="Войти" />
-    }
+    <div class="container-cp">
+        @using (Html.BeginForm("Login", "Login", FormMethod.Post))
+        {
+            <label>Логин: </label>
+            <input name="login" type="text" value="@ViewData["Login"]" required>
+            <label>Пароль: </label>
+            <input name="password" type="text" required>
+            <input type="submit" value="Войти" />
+        }
+    </div>
 
     <div class="footer">
         <p></p>

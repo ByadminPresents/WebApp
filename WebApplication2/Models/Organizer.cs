@@ -25,9 +25,16 @@ public partial class Organizer
     [StringLength(50)]
     public string Password { get; set; } = null!;
 
+    [Column("uniqueKey_id")]
+    public int? UniqueKeyId { get; set; }
+
     [ForeignKey("EmailId")]
     [InverseProperty("Organizers")]
     public virtual Email Email { get; set; } = null!;
+
+    [ForeignKey("UniqueKeyId")]
+    [InverseProperty("Organizers")]
+    public virtual UniqueKey? UniqueKey { get; set; }
 
     [InverseProperty("Organizer")]
     public virtual ICollection<VotingEvent> VotingEvents { get; set; } = new List<VotingEvent>();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using WebApplication2.DB;
 using WebApplication2.Models;
 
@@ -12,14 +13,22 @@ namespace WebApplication2.Controllers
         {
             _context = context;
         }
-        public ViewResult VotingEventsList()
+        public IActionResult VotingEventsList()
         {
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"].ToString()))
+            {
+                return RedirectToAction("Index", "Login");
+            }
             var votingEvents = _context.VotingEvents.Include(e => e.Projects).Where(e => e.OrganizerId == 1);
             return View(votingEvents);
         }
 
         public IActionResult VotingEventCreate()
         {
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            {
+                return RedirectToAction("Index", "Login");
+            }
             return View();
         }
 

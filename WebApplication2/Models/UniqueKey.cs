@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 namespace WebApplication2.Models;
 
 [Table("UniqueKey")]
-[Index("UniqueKeyValue", Name = "IX_UniqueKey", IsUnique = true)]
 public partial class UniqueKey
 {
     [Key]
@@ -17,6 +16,9 @@ public partial class UniqueKey
     [Column("uniqueKey_value")]
     [StringLength(36)]
     public string UniqueKeyValue { get; set; } = null!;
+
+    [InverseProperty("UniqueKey")]
+    public virtual ICollection<Organizer> Organizers { get; set; } = new List<Organizer>();
 
     [InverseProperty("UniqueKey")]
     public virtual ICollection<Participant> Participants { get; set; } = new List<Participant>();
