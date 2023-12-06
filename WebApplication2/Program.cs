@@ -44,6 +44,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
+    pattern: "{controller=Login}/{action=Index}");
+//pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
 
 app.Run();
