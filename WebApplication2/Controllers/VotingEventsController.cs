@@ -15,7 +15,7 @@ namespace WebApplication2.Controllers
         }
         public IActionResult VotingEventsList()
         {
-            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"].ToString()))
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
             {
                 return RedirectToAction("Index", "Login");
             }
@@ -45,6 +45,10 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public IActionResult VotingEventEdit(int votingEventId)
         {
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            {
+                return RedirectToAction("Index", "Login");
+            }
             VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Projects).ThenInclude(e => e.Participants).Include(e => e.Projects).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
             if (votingEvent != null)
             {

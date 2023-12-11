@@ -17,7 +17,6 @@ namespace WebApplication2.Controllers
         }
         public IActionResult Index()
         {
-            //Crypto.EncryptID("11111111-1111-1234-ffff-111111111111");
             return View("Login");
         }
 

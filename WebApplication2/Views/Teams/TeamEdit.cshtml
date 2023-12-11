@@ -16,7 +16,7 @@
 
     <div class="header">
         <div class="container-header">
-            <a href="" class="back-arrow">&#8592;</a>
+            <a href="../VotingEvents/VotingEventEdit?votingEventId=@ViewData["votingEventId"]" class="back-arrow">&#8592;</a>
             <h1 class="title">Редактирование команды: @Model.Title</h1>
         </div>
     </div>
@@ -50,7 +50,7 @@
                     </tr>
                 </tbody>
             </table>
-            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate"></button>
+            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate">Добавить участника</button>
             <input type="submit" value="Создать конференцию" />
         </form>
     </div>

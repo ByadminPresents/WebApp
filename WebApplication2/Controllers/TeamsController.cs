@@ -35,6 +35,11 @@ namespace WebApplication2.Controllers
         [HttpGet]
         public IActionResult TeamCreateView(int votingEventId)
         {
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            ViewData["votingEventId"] = votingEventId;
             return View("TeamCreate", new Project() { VotingEventId = votingEventId });
         }
 

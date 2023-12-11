@@ -15,7 +15,7 @@
 
     <div class="header">
         <div class="container-header">
-            <a href="main-page.html" class="back-arrow">&#8592;</a>
+            <a href="../VotingEvents/VotingEventsList" class="back-arrow">&#8592;</a>
             <a href="vote.html"> Страница для голосования </a>
             <h1 class="title">@Model.Name</h1>
         </div>
@@ -68,7 +68,7 @@
                 <!-- Add your hypothetical vote diagram here -->
             </div>
             <div>
-                <a>Добавить зрителей</a>
+                <a asp-controller="Viewers" asp-action="ViewersView" asp-route-votingEventId="@Model.Id">Редактировать зрителей</a>
             </div>
         </div>
     </div>

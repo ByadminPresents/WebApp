@@ -11,7 +11,7 @@ public partial class Viewer
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     [Column("name")]
     [StringLength(60)]
