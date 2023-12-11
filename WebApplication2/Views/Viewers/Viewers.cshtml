@@ -31,28 +31,35 @@
                     </tr>
                 </thead>
                 @{
-                    int count = 0;
-                    foreach (var viewer in Model)
+                    int elementsCount = 0;
+                    if (Model.Count > 0)
                     {
-                        <tbody id="ViewersList" data-count="@count">
-                            <tr>
-                                <td><input type="hidden" name="viewers[@count].Id" value="@viewer.Id" class="form-control" /></td>
-                                <td><input type="text" name="viewers[@count].Name" value="@viewer.Name" class="form-control" /></td>
-                                <td><input type="text" name="viewers[@count].Email.EmailValue" value="@viewer.Email.EmailValue" class="form-control" /></td>
-                            </tr>
-                        </tbody>
-                        count++;
+                        elementsCount = Model.Count - 1;
                     }
-                    if (Model.Count == 0)
-                    {
-                        <tbody id="ViewersList" data-count="0">
-                            <tr>
-                                <td><input type="hidden" name="viewers[0].Id" class="form-control" /></td>
-                                <td><input type="text" name="viewers[0].Name" class="form-control" /></td>
-                                <td><input type="text" name="viewers[0].Email.EmailValue" class="form-control" /></td>
-                            </tr>
-                        </tbody>
-                    }
+                    <tbody id="ViewersList" data-count="@elementsCount">
+                        @{
+                            int count = 0;
+                            foreach (var viewer in Model)
+                            {
+                                <tr id="element-@count">
+                                    <td><input type="hidden" name="viewers[@count].Id" value="@viewer.Id" class="form-control" /></td>
+                                    <td><input type="text" name="viewers[@count].Name" value="@viewer.Name" class="form-control" required /></td>
+                                    <td><input type="text" name="viewers[@count].Email.EmailValue" value="@viewer.Email.EmailValue" class="form-control" required /></td>
+                                    <td><button type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
+                                </tr>
+                                count++;
+                            }
+                            if (Model.Count == 0)
+                            {
+                                <tr id="element-0">
+                                    <td><input type="hidden" name="viewers[0].Id" class="form-control" /></td>
+                                    <td><input type="text" name="viewers[0].Name" class="form-control" required /></td>
+                                    <td><input type="text" name="viewers[0].Email.EmailValue" class="form-control" required /></td>
+                                    <td><button type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
                 }
             </table>
             <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate">Добавить зрителя</button>
@@ -67,11 +74,18 @@
         countVal += 1;
         var html = '';
         html += '<tr>';
-        html += '<td><input type="hidden" name="viewers[' + countVal + '].Id" class="form-control"/></td>';
-        html += '<td><input type="text" name="viewers[' + countVal + '].Name" class="form-control"/></td>';
-        html += '<td><input type="text" name="viewers[' + countVal + '].Email.EmailValue" class="form-control"/></td>';
+        html += '<td><input type="hidden" name="viewers[' + countVal + '].Id" class="form-control" required/></td>';
+        html += '<td><input type="text" name="viewers[' + countVal + '].Name" class="form-control" required/></td>';
+        html += '<td><input type="text" name="viewers[' + countVal + '].Email.EmailValue" class="form-control" required/></td>';
         html += '</tr>';
         $('#ViewersList').append(html);
         $('#ViewersList').attr('data-count', countVal);
+    }
+    function DeleteRow(id) {
+        var countVal = parseInt($('#ViewersList').attr('data-count'));
+        $('#element-' + id).remove()
+        for (i = id + 1; i < countVal + 1; i++) {
+            $('#element-' + i).id = '#element-' + i - 1'
+        }
     }
 </script>

@@ -26,15 +26,28 @@ namespace WebApplication2.Controllers
             }
             return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
         }
+        public IActionResult ViewersViewList(int votingEventId, List<Viewer> viewers)
+        {
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            ViewData["votingEventId"] = votingEventId;
+            return View("Viewers", viewers);
+        }
 
         [HttpPost]
         public IActionResult UpdateViewers(int votingEventId, List<Viewer> viewers)
-        { 
+        {
             foreach (var viewer in viewers)
             {
                 if (viewer.Id != null)
                 {
-                    var tempViewer = _context.Viewers.Include(e => e.Email).FirstOrDefault(e => e.Id == viewer.Id);
+                    var tempViewer = _context.Viewers.Include(e => e.Email).FirstOrDefault(e => e.Id == viewer.Id && e.VotingEventId == votingEventId);
+                    if (tempViewer == null)
+                    {
+                        return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
+                    }
                     tempViewer.Name = viewer.Name;
                     tempViewer.Email.EmailValue = viewer.Email.EmailValue;
                 }
@@ -42,8 +55,15 @@ namespace WebApplication2.Controllers
                 {
                     viewer.VotingEventId = votingEventId;
                     _context.Viewers.Add(viewer);
-                    _context.SaveChanges();
                 }
+            }
+            try
+            {
+                _context.SaveChanges();
+            }
+            catch
+            {
+                ViewersViewList(votingEventId, viewers);
             }
             return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
         }
