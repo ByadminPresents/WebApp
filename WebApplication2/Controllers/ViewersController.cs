@@ -18,11 +18,11 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).FirstOrDefault(e => e.Id == votingEventId);
+            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).Include(e => e.Viewers).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
             if (votingEvent != null)
             {
                 ViewData["votingEventId"] = votingEventId;
-                return View("Viewers", votingEvent.Viewers);
+                return View("ViewersEdit", votingEvent.Viewers);
             }
             return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
         }
@@ -33,7 +33,7 @@ namespace WebApplication2.Controllers
                 return RedirectToAction("Index", "Login");
             }
             ViewData["votingEventId"] = votingEventId;
-            return View("Viewers", viewers);
+            return View("ViewersEdit", viewers);
         }
 
         [HttpPost]
@@ -68,11 +68,23 @@ namespace WebApplication2.Controllers
             return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
         }
 
-        [HttpPost]
-        public IActionResult AddViewers()
+        public IActionResult ViewersInvitesView(int votingEventId)
         {
-
-            return View();
+            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            {
+                return RedirectToAction("Index", "Login");
+            }
+            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).Include(e => e.Viewers).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+            return View(votingEvent);
         }
+
+        //public IActionResult ViewersSendInvites(int votingEventId)
+        //{
+        //    if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+        //    {
+        //        return RedirectToAction("Index", "Login");
+        //    }
+        //    VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).Include(e => e.Viewers).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+        //}
     }
 }

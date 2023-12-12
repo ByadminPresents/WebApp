@@ -1,0 +1,85 @@
+﻿@model List<Viewer>
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сайт для голосования</title>
+</head>
+<body>
+    <div class="header">
+        <div class="container-header">
+            <a href="../VotingEvents/VotingEventEdit?votingEventId=@ViewData["votingEventId"]" class="back-arrow">&#8592;</a>
+            <h1 class="title">Редактирование зрителей</h1>
+        </div>
+    </div>
+    <div class="container-cp">
+        @using (Html.BeginForm("UpdateViewers", "Viewers", FormMethod.Post))
+        {
+            <input type="submit" value="Сохранить изменения" />
+            <input type="hidden" name="votingEventId" value="@ViewData["votingEventId"]" class="form-control" />
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>email</th>
+                        <th></th>
+                        <th>Кол-во голосов</th>
+                    </tr>
+                </thead>
+                <tbody id="ViewersList">
+                    @{
+                        int count = 0;
+                        foreach (var viewer in Model)
+                        {
+                            <tr>
+                                <td><p id="elementName" type="text" name="viewers[@count].Name" value="@viewer.Name" class="form-control" /></td>
+                                <td><p id="elementEmail" type="text" name="viewers[@count].Email.EmailValue" value="@viewer.Email.EmailValue" class="form-control" /></td>
+                                <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
+                                <td>@viewer.Votes.Count</td>
+                            </tr>
+                            count++;
+                        }
+                    }
+                </tbody>
+            </table>
+            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate">Добавить зрителя</button>
+        }
+    </div>
+</body>
+
+<script src="@Url.Content("~/lib/jquery/dist/jquery.js")" type="text/javascript"></script>
+<script>
+    function AddRow() {
+        var countVal = parseInt($('#ViewersList').attr('data-count'));
+        countVal += 1;
+        var html = '';
+        html += '<tr id="element-' + countVal + '">';
+        html += '<td><input id="elementId" type="hidden" name="viewers[' + countVal + '].Id" class="form-control" required/></td>';
+        html += '<td><input id="elementName" type="text" name="viewers[' + countVal + '].Name" class="form-control" required/></td>';
+        html += '<td><input id="elementEmail" type="text" name="viewers[' + countVal + '].Email.EmailValue" class="form-control" required/></td>';
+        html += '<td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(' + countVal + ')">X</button></td>';
+        html += '<td>0</td>';
+        html += '</tr>';
+        $('#ViewersList').append(html);
+        $('#ViewersList').attr('data-count', countVal);
+    }
+    function DeleteRow(id) {
+        var countVal = parseInt($('#ViewersList').attr('data-count'));
+        if (countVal != 0) {
+            $('#element-' + id).remove()
+            for (i = id + 1; i < countVal + 1; i++) {
+                $('#element-' + i).find('#elementId').attr('name', 'viewers[' + (i - 1) + '].Id');
+                $('#element-' + i).find('#elementName').attr('name', 'viewers[' + (i - 1) + '].Name');
+                $('#element-' + i).find('#elementEmail').attr('name', 'viewers[' + (i - 1) + '].Email.EmailValue');
+                $('#element-' + i).find('#elementDelete').attr('onclick', 'DeleteRow(' + (i - 1) + ')');
+                $('#element-' + i).attr('id', 'element-' + (i - 1));
+            }
+            $('#ViewersList').attr('data-count', countVal - 1);
+        }
+    }
+</script>
