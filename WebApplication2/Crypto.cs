@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using WebApplication2.DB;
 
@@ -172,6 +173,19 @@ namespace WebApplication2
                 }
             }
             return data;
+        }
+
+        public static string GUIDLengthifyer(string guid)
+        {
+            string longguid = guid;
+
+            return longguid;
+        }
+        
+        public static string GUIDShortener(string longguid)
+        {
+            string guid = longguid;
+            return guid;
         }
     }
 }

@@ -18,6 +18,7 @@ public partial class Viewer
     [Unicode(false)]
     public string Name { get; set; } = null!;
 
+    [ForeignKey("EmailId")]
     [Column("email_id")]
     public int EmailId { get; set; }
 
@@ -27,7 +28,7 @@ public partial class Viewer
     [Column("votingEvent_id")]
     public int VotingEventId { get; set; }
 
-    [ForeignKey("EmailId")]
+    
     [InverseProperty("Viewers")]
     public virtual Email Email { get; set; } = null!;
 

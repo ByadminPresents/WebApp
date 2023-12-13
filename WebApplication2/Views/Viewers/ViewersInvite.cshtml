@@ -18,11 +18,11 @@
         </div>
     </div>
     <div class="container-cp">
-        @using (Html.BeginForm("UpdateViewers", "Viewers", FormMethod.Post))
+        @using (Html.BeginForm("ViewersSendInvites", "Viewers", FormMethod.Post))
         {
             <input type="hidden" name="votingEventId" value="@ViewData["votingEventId"]" class="form-control" />
-            <button type="submit" value="sendNew" name="sendType">Отправить новым зрителям</button>
-            <button type="submit" value="sendAll" name="sendType">Отправить всем зрителям</button>
+            <button type="submit" name="buttonParams" value="sendNew">Отправить новым зрителям</button>
+            <button type="submit" name="buttonParams" value="sendAll">Отправить всем зрителям</button>
             <table>
                 <thead>
                     <tr>
@@ -43,11 +43,11 @@
                                 @{
                                     if (viewer.UniqueKeyId == null)
                                     {
-                                        <td><button type="submit" class="btn">✉</button></td>
+                                        <td><button type="submit" name="buttonParams" value="sendSingle:@viewer.Id" class="btn">✉</button></td>
                                     }
                                     else
                                     {
-                                        <td><button type="submit" class="btn">✓</button></td>
+                                        <td><button type="submit" name="buttonParams" value="sendSingle:@viewer.Id" class="btn">✓</button></td>
                                     }
                                 }
                                 <td>@viewer.Votes.Count</td>

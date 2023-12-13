@@ -34,7 +34,7 @@ public partial class WebappDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=BYADMINLAPTOP;Initial Catalog=WEBAppDB;Integrated Security=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Data Source=BYADMINPRESENTS;Initial Catalog=WEBAppDB;Integrated Security=True;Trust Server Certificate=True");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -67,18 +67,29 @@ public partial class WebappDbContext : DbContext
 
         modelBuilder.Entity<Viewer>(entity =>
         {
-            entity.HasOne(d => d.Email).WithMany(p => p.Viewers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+            entity.HasOne(d => d.Email).WithMany(p => p.Viewers).HasForeignKey(k => k.EmailId)
                 .HasConstraintName("FK_Viewer_Email");
 
-            entity.HasOne(d => d.UniqueKey).WithMany(p => p.Viewers).HasConstraintName("FK_Viewer_UniqueKey");
+            entity.HasOne(d => d.UniqueKey).WithMany(p => p.Viewers).HasForeignKey(k => k.UniqueKeyId).HasConstraintName("FK_Viewer_UniqueKey");
 
             entity.HasOne(d => d.VotingEvent).WithMany(p => p.Viewers)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Viewer_VotingEvent");
         });
 
-        modelBuilder.Entity<Vote>(entity =>
+        //modelBuilder.Entity<UniqueKey>(entity =>
+        //{
+        //    entity.HasMany(d => d.Viewers).WithOne(p => p.UniqueKey).HasForeignKey(k => k.UniqueKeyId).OnDelete(DeleteBehavior.Cascade);
+
+        //});
+
+        //modelBuilder.Entity<Email>(entity =>
+        //{
+        //    entity.HasMany(d => d.Viewers).WithOne(p => p.Email).HasForeignKey(k => k.EmailId).OnDelete(DeleteBehavior.Cascade);
+
+        //});
+
+            modelBuilder.Entity<Vote>(entity =>
         {
             entity.HasOne(d => d.Project).WithMany(p => p.Votes)
                 .OnDelete(DeleteBehavior.ClientSetNull)

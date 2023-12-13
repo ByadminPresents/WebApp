@@ -20,7 +20,7 @@
     <div class="container-cp">
         @using (Html.BeginForm("UpdateViewers", "Viewers", FormMethod.Post))
         {
-            <input type="submit" value="Сохранить изменения" />
+            <button type="submit" id="submitButton" name="buttonParams" value="">Сохранить изменения</button>
             <input type="hidden" name="votingEventId" value="@ViewData["votingEventId"]" class="form-control" />
             <table>
                 <thead>
@@ -89,8 +89,11 @@
     }
     function DeleteRow(id) {
         var countVal = parseInt($('#ViewersList').attr('data-count'));
-        if (countVal != 0) {
-            $('#element-' + id).remove()
+        if (countVal != -1) {
+            if ($('#element-' + id).find('#elementId').attr('value') != undefined) {
+                $('#submitButton').attr('value', $('#submitButton').attr('value') + ',' + $('#element-' + id).find('#elementId').attr('value'));
+            }
+            $('#element-' + id).remove();
             for (i = id + 1; i < countVal + 1; i++) {
                 $('#element-' + i).find('#elementId').attr('name', 'viewers[' + (i - 1) + '].Id');
                 $('#element-' + i).find('#elementName').attr('name', 'viewers[' + (i - 1) + '].Name');
