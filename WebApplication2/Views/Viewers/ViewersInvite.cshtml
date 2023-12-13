@@ -20,8 +20,9 @@
     <div class="container-cp">
         @using (Html.BeginForm("UpdateViewers", "Viewers", FormMethod.Post))
         {
-            <input type="submit" value="Сохранить изменения" />
             <input type="hidden" name="votingEventId" value="@ViewData["votingEventId"]" class="form-control" />
+            <button type="submit" value="sendNew" name="sendType">Отправить новым зрителям</button>
+            <button type="submit" value="sendAll" name="sendType">Отправить всем зрителям</button>
             <table>
                 <thead>
                     <tr>
@@ -37,9 +38,18 @@
                         foreach (var viewer in Model)
                         {
                             <tr>
-                                <td><p id="elementName" type="text" name="viewers[@count].Name" value="@viewer.Name" class="form-control" /></td>
-                                <td><p id="elementEmail" type="text" name="viewers[@count].Email.EmailValue" value="@viewer.Email.EmailValue" class="form-control" /></td>
-                                <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
+                                <td><p> @viewer.Name</p></td>
+                                <td><p> @viewer.Email.EmailValue</p></td>
+                                @{
+                                    if (viewer.UniqueKeyId == null)
+                                    {
+                                        <td><button type="submit" class="btn">✉</button></td>
+                                    }
+                                    else
+                                    {
+                                        <td><button type="submit" class="btn">✓</button></td>
+                                    }
+                                }
                                 <td>@viewer.Votes.Count</td>
                             </tr>
                             count++;
@@ -47,7 +57,6 @@
                     }
                 </tbody>
             </table>
-            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate">Добавить зрителя</button>
         }
     </div>
 </body>

@@ -1,3 +1,4 @@
+using WebApplication2;
 using WebApplication2.DB;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,5 +47,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
 //pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
+
+MailSender.SendInvites(new List<string> { "sasha.maksimyuknew@mail.ru" }, new List<string> { "—сылка на сайт" });
 
 app.Run();
