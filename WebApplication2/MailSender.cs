@@ -9,8 +9,8 @@ namespace WebApplication2
         {
             using (var client = new SmtpClient())
             {
-                await client.ConnectAsync("smtp.yandex.ru", 465, true);
-                await client.AuthenticateAsync("eventinviterutmn", "mwrbhsrsyromizlk");
+                await client.ConnectAsync("smtp.gmail.com", 465, true);
+                await client.AuthenticateAsync("sasha.maksimyuk", "eadv eqcc zkvo axyd");
                 int count = 0;
                 var msg = new MimeMessage();
                 msg.From.Add(new MailboxAddress("Приглашение на событие", "eventinviterutmn@yandex.ru"));
@@ -19,9 +19,9 @@ namespace WebApplication2
                 {
                     msg.To.Clear();
                     msg.To.Add(new MailboxAddress("", email));
-                    msg.Body = new TextPart("Plain")
+                    msg.Body = new TextPart("html")
                     {
-                        Text = urls[count]
+                        Text = $"<a href=\"{urls[count]}\">{urls[count]}</a>"
                     };
                     await client.SendAsync(msg);
                     count++;

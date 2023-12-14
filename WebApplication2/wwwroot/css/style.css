@@ -279,3 +279,13 @@ body {
     position: relative;
     width: 100px;
 }
+
+.score-selected {
+    flex: 0 0 calc(25% - 35px);
+    height: 100px;
+    background-color: dodgerblue;
+    margin: 5px;
+    margin-top: 20px;
+    position: relative;
+    width: 100px;
+}

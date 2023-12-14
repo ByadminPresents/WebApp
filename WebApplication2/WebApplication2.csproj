@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\VotingEventCreation\**" />
+    <Content Remove="Views\VotingEventCreation\**" />
+    <EmbeddedResource Remove="Views\VotingEventCreation\**" />
+    <None Remove="Views\VotingEventCreation\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\css\style.css" />
   </ItemGroup>
 
@@ -26,7 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\VotingEventCreation\" />
     <Folder Include="folder\" />
   </ItemGroup>
 

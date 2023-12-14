@@ -1,0 +1,50 @@
+﻿@model VotingEvent
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Сайт для голосования</title>
+</head>
+<body>
+    <div class="header">
+        <div class="conteiner-header">
+            <h1 class="titel">Голосование</h1>
+        </div>
+    </div>
+    <div class="container-vote">
+        @{
+            foreach (var project in Model.Projects)
+            {
+                <div class="prog-vote">@project.Title</div>
+                <div class="score-case">
+                    @{
+                        for (int i = 1; i <= 5; i++)
+                        {
+                            if (((Dictionary<int, int>)ViewData["votes"]).TryGetValue(project.Id, out int score) && score == i)
+                            {
+                                <a class="score-selected" asp-action="VotesApply" asp-controller="Votes" asp-route-userId="@ViewData["userId"]" asp-route-teamId="@project.Id" asp-route-score="@i">@i</a>
+                            }
+                            else
+                            {
+                                <a class="score" asp-action="VotesApply" asp-controller="Votes" asp-route-userId="@ViewData["userId"]" asp-route-teamId="@project.Id" asp-route-score="@i">@i</a>
+                            }
+                        }
+                    }
+                </div>
+            }
+        }
+    </div>
+    <div class="footer">
+        <p>
+
+        </p>
+    </div>
+
+</body>
+</html>

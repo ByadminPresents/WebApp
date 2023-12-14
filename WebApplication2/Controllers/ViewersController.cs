@@ -187,7 +187,7 @@ namespace WebApplication2.Controllers
                 foreach (var viewer in viewers)
                 {
                     emails[count] = viewer.Email.EmailValue;
-                    urls[count] = $"?userId={Crypto.GUIDLengthifyer(viewer.UniqueKey.UniqueKeyValue)}";
+                    urls[count] = $"https://localhost:44343/Votes/VotesView?userId={Crypto.GUIDLengthifyer(viewer.UniqueKey.UniqueKeyValue)}";
                     count++;
                 }
                 MailSender.SendInvites(emails, urls);
