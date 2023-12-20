@@ -19,10 +19,10 @@ namespace WebApplication2.Controllers
 
         public IActionResult VotesView(string userId)
         {
-            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            //if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            //{
+            //    return RedirectToAction("Index", "Login");
+            //}
             Viewer viewer = _context.Viewers.Include(e => e.UniqueKey).Include(e => e.VotingEvent).ThenInclude(e => e.Projects).Include(e => e.Votes).FirstOrDefault(e => e.UniqueKey.UniqueKeyValue == Crypto.GUIDShortener(userId));
             if (viewer != null)
             {
@@ -40,10 +40,10 @@ namespace WebApplication2.Controllers
 
         public IActionResult VotesApply(string userId, int teamId, int score)
         {
-            if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            //if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
+            //{
+            //    return RedirectToAction("Index", "Login");
+            //}
             Viewer viewer = _context.Viewers.Include(e => e.UniqueKey).Include(e => e.VotingEvent).ThenInclude(e => e.Projects).Include(e => e.Votes).FirstOrDefault(e => e.UniqueKey.UniqueKeyValue == Crypto.GUIDShortener(userId));
             if (viewer != null && score <= 5 && score >= 1 && viewer.VotingEvent.Projects.FirstOrDefault(e => e.Id == teamId) != null)
             {

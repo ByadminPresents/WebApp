@@ -19,8 +19,12 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            var votingEvents = _context.VotingEvents.Include(e => e.Projects).Where(e => e.OrganizerId == 1);
-            return View(votingEvents);
+            var votingEvents = _context.VotingEvents.Include(e => e.Projects).Include(e => e.Organizer).ThenInclude(e => e.UniqueKey).Where(e => e.Organizer.UniqueKey.UniqueKeyValue == Crypto.GetUserIdFromSessionID(Request.Cookies["sessionId"]));
+            if (votingEvents != null)
+            {
+                return View(votingEvents);
+            }
+            return RedirectToAction("Index", "Login");
         }
 
         public IActionResult VotingEventCreate()
@@ -35,7 +39,8 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> VotingEventCreate(VotingEvent votingEvent)
         {
-            votingEvent.OrganizerId = 1;
+            var organizer = _context.Organizers.Include(e => e.UniqueKey).FirstOrDefault(e => e.UniqueKey.UniqueKeyValue == Crypto.GetUserIdFromSessionID(Request.Cookies["sessionId"]));
+            votingEvent.OrganizerId = organizer.Id;
             _context.VotingEvents.Add(votingEvent);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(VotingEventsList));
@@ -49,7 +54,8 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Projects).ThenInclude(e => e.Participants).Include(e => e.Projects).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Organizer).ThenInclude(e => e.UniqueKey).Include(e => e.Projects).ThenInclude(e => e.Participants).Include(e => e.Projects).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId &&
+            e.Organizer.UniqueKey.UniqueKeyValue == Crypto.GetUserIdFromSessionID(Request.Cookies["sessionId"]));
             if (votingEvent != null)
             {
                 var totalVotes = new List<double>();
@@ -58,9 +64,26 @@ namespace WebApplication2.Controllers
                     totalVotes.Add(x.Votes.Count);
                 }
                 ViewBag.TotalVotes = totalVotes;
+                var projects = _context.Projects.Where(e => e.VotingEventId == votingEventId);
+                var projectValues = new double[projects.Count()];
+                var projectNames = new string[projects.Count()];
+                int count = 0;
+                foreach (var project in projects)
+                {
+                    projectNames[count] = project.Title;
+                    double sum = 0;
+                    foreach (var vote in project.Votes)
+                    {
+                        sum += vote.Score;
+                    }
+                    projectValues[count] = sum / project.Votes.Count;
+                    count++;
+                }
+                ViewData["projectValues"] = projectValues;
+                ViewData["projectNames"] = projectNames;
                 return View("VotingEventEdit", votingEvent);
             }
-            return View(nameof(HomeController));
+            return RedirectToAction("Index", "Login");
         }
     }
 }

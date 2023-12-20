@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.WebEncoders;
+using System.Text.Unicode;
 using WebApplication2;
 using WebApplication2.DB;
 
@@ -12,6 +15,15 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSession();
 builder.Services.AddDbContext<WebappDbContext>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.Configure<WebEncoderOptions>(options => options.TextEncoderSettings = new System.Text.Encodings.Web.TextEncoderSettings(UnicodeRanges.All));
+
+builder.WebHost.UseIISIntegration();
+//builder.WebHost.UseKestrelCore();
+//builder.WebHost.UseKestrelHttpsConfiguration();
+//builder.WebHost.ConfigureKestrel(options => options.Listen(new System.Net.IPAddress(new byte[] { 192, 168, 0, 8 }), 80));
+
+builder.WebHost.UseUrls(new string[] { "https://192.168.0.108:80", "https://26.236.65.40:80" });
+
 
 var app = builder.Build();
 
@@ -35,7 +47,6 @@ if (!app.Environment.IsDevelopment())
 //    .RunAsync();
 
 app.UseSession();
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

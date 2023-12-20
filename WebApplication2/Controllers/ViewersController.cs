@@ -81,7 +81,7 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            return ViewersViewList(votingEventId, viewers);
+            return RedirectToAction("ViewersView", new { votingEventId = votingEventId } );
         }
 
         public IActionResult ViewersInvitesView(int votingEventId)
@@ -187,7 +187,7 @@ namespace WebApplication2.Controllers
                 foreach (var viewer in viewers)
                 {
                     emails[count] = viewer.Email.EmailValue;
-                    urls[count] = $"https://localhost:44343/Votes/VotesView?userId={Crypto.GUIDLengthifyer(viewer.UniqueKey.UniqueKeyValue)}";
+                    urls[count] = $"https://192.168.0.108:80/Votes/VotesView?userId={Crypto.GUIDLengthifyer(viewer.UniqueKey.UniqueKeyValue)}";
                     count++;
                 }
                 MailSender.SendInvites(emails, urls);

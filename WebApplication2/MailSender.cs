@@ -23,10 +23,10 @@ namespace WebApplication2
                     {
                         Text = $"<a href=\"{urls[count]}\">{urls[count]}</a>"
                     };
-                    await client.SendAsync(msg);
+                    client.Send(msg);
                     count++;
                 }
-                await client.DisconnectAsync(true);
+                client.Disconnect(true);
             }
         }
     }

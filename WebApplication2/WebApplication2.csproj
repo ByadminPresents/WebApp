@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Blazor" Version="2.0.0-rc2" />
     <PackageReference Include="MailKit" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.1.1" />

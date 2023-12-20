@@ -26,10 +26,14 @@ namespace WebApplication2
             var context = new WebappDbContext();
             if (context.Organizers.Include(e => e.UniqueKey).FirstOrDefault(e => e.UniqueKey.UniqueKeyValue == DecryptIDToUniqueKey(decSessionId)) == null)
             {
+                context.Dispose();
                 return false;
             }
+            context.Dispose();
             return true;
         }
+
+        public static string GetUserIdFromSessionID(string sessionId) => DecryptIDToUniqueKey(DecryptData(sessionId));
 
         public static string GetSessionID(string login, string password)
         {
