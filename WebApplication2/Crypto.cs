@@ -10,16 +10,24 @@ namespace WebApplication2
         private static readonly char[] chars = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
         public static bool CheckSessionID(string sessionId)
         {
-            if (sessionId == null || sessionId == "" || sessionId.Length <= 42)
+            string decSessionId = "";
+            try
             {
-                return false;
+                if (sessionId == null || sessionId == "" || sessionId.Length <= 42)
+                {
+                    return false;
+                }
+                decSessionId = DecryptData(sessionId);
+                if (!ValidateCheckSum(decSessionId))
+                {
+                    return false;
+                }
+                if (((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds() - DecryptIDToTimestamp(decSessionId) >= 60 * 60 * 24)
+                {
+                    return false;
+                }
             }
-            var decSessionId = DecryptData(sessionId);
-            if (!ValidateCheckSum(decSessionId))
-            {
-                return false;
-            }
-            if (((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds() - DecryptIDToTimestamp(decSessionId) >= 60 * 60 * 24)
+            catch
             {
                 return false;
             }

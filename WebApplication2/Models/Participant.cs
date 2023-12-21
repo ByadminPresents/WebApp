@@ -11,7 +11,7 @@ public partial class Participant
 {
     [Key]
     [Column("id")]
-    public int Id { get; set; }
+    public int? Id { get; set; }
 
     [Column("name")]
     [StringLength(60)]

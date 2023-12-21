@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using System.Linq;
 using WebApplication2.DB;
 using WebApplication2.Models;
 
@@ -65,22 +66,36 @@ namespace WebApplication2.Controllers
                 }
                 ViewBag.TotalVotes = totalVotes;
                 var projects = _context.Projects.Where(e => e.VotingEventId == votingEventId);
-                var projectValues = new double[projects.Count()];
-                var projectNames = new string[projects.Count()];
-                int count = 0;
+                var tempProjects = new List<KeyValuePair<int, double>>();
+                int count = 1;
                 foreach (var project in projects)
                 {
-                    projectNames[count] = project.Title;
                     double sum = 0;
                     foreach (var vote in project.Votes)
                     {
                         sum += vote.Score;
                     }
-                    projectValues[count] = sum / project.Votes.Count;
+                    tempProjects.Add(new KeyValuePair<int, double>(count, sum / project.Votes.Count));
                     count++;
                 }
-                ViewData["projectValues"] = projectValues;
-                ViewData["projectNames"] = projectNames;
+
+                ViewData["projects"] = tempProjects.OrderByDescending(x => x.Value).ToList();
+                //var projectValues = new double[projects.Count()];
+                //var projectNames = new string[projects.Count()];
+                //count = 0;
+                //foreach (var project in projects)
+                //{
+                //    projectNames[count] = project.Title;
+                //    double sum = 0;
+                //    foreach (var vote in project.Votes)
+                //    {
+                //        sum += vote.Score;
+                //    }
+                //    projectValues[count] = sum / project.Votes.Count;
+                //    count++;
+                //}
+                //ViewData["projectValues"] = projectValues;
+                //ViewData["projectNames"] = projectNames;
                 return View("VotingEventEdit", votingEvent);
             }
             return RedirectToAction("Index", "Login");

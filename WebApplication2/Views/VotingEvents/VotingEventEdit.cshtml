@@ -32,7 +32,7 @@
                 foreach (var team in Model.Projects)
                 {
                     count++;
-                    <div class="team-square">
+                    <a asp-controller="Teams" asp-action="TeamEditView" asp-route-votingEventId="@Model.Id" asp-route-projectId="@team.Id" class="team-square">
                         <p style="font-weight: bold;">Команда @count</p>
                         <p style="font-weight: bold;">Название проекта:</p>
                         <p>"@team.Title"</p>
@@ -56,7 +56,7 @@
                             }
                         }
                         <p style="font-weight: bold;">Голосов: @ViewBag.TotalVotes[count - 1]</p>
-                    </div>
+                    </a>
                 }
             }
             <!-- Add more team squares as needed -->
@@ -85,16 +85,14 @@
     var projectNames = [];
     var projectValues = [];
     @{
-        var tempValues = (double[])ViewData["projectValues"];
-        var tempNames = (string[])ViewData["projectNames"];
-        for (int i = 0; i < tempValues.Length; i++)
+        var values = (List<KeyValuePair<int, double>>)ViewData["projects"];
+        for (int i = 0; i < values.Count; i++)
         {
-            @:projectNames.push('@tempNames[i]');
-            @:projectValues.push(parseFloat('@tempValues[i].ToString().Replace(',', '.')'));
+            @:projectNames.push('Команда @values[i].Key');
+            @:projectValues.push(parseFloat('@values[i].Value.ToString().Replace(',', '.')'));
         }
-
     }
-    var project = {
+        var project = {
         data: projectValues,
         backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
@@ -116,7 +114,6 @@
         lineTension: 0,
     };
 
-    //.getContext('2d')
     var verticalBarChart = new Chart(
         document.getElementById('diagram').getContext('2d'), {
         type: 'bar',

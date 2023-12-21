@@ -44,13 +44,14 @@
                     </tr>
                 </thead>
                 <tbody id="ParticipantList" data-count="0">
-                    <tr>
-                        <td><input type="text" name="Participants[0].Name" class="form-control" /></td>
-                        <td><input type="text" name="Participants[0].Email" class="form-control" /></td>
+                    <tr id="element-0">
+                        <td><input id="elementName" type="text" name="Participants[0].Name" class="form-control" required/></td>
+                        <td><input id="elementEmail" type="text" name="Participants[0].Email.EmailValue" class="form-control" required/></td>
+                        <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
                     </tr>
                 </tbody>
             </table>
-            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate"></button>
+            <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate">Добавить участника</button>
             <input type="submit" value="Создать команду" />
         </form>
     </div>
@@ -67,11 +68,25 @@
         var countVal = parseInt($('#ParticipantList').attr('data-count'));
         countVal += 1;
         var html = '';
-        html += '<tr>';
-        html += '<td><input type="text" name="Participants[' + countVal + '].Name" class="form-control"/></td>';
-        html += '<td><input type="text" name="Participants[' + countVal + '].Email" class="form-control"/></td>';
+        html += '<tr id="element-' + countVal + '">';
+        html += '<td><input id="elementName" type="text" name="Participants[' + countVal + '].Name" class="form-control" required/></td>';
+        html += '<td><input id="elementEmail" type="text" name="Participants[' + countVal + '].Email.EmailValue" class="form-control" required/></td>';
+        html += '<td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(' + countVal + ')">X</button></td>';
         html += '</tr>';
         $('#ParticipantList').append(html);
         $('#ParticipantList').attr('data-count', countVal);
+    }
+    function DeleteRow(id) {
+        var countVal = parseInt($('#ParticipantList').attr('data-count'));
+        if (countVal != -1) {
+            $('#element-' + id).remove();
+            for (i = id + 1; i < countVal + 1; i++) {
+                $('#element-' + i).find('#elementName').attr('name', 'Participants[' + (i - 1) + '].Name');
+                $('#element-' + i).find('#elementEmail').attr('name', 'Participants[' + (i - 1) + '].Email.EmailValue');
+                $('#element-' + i).find('#elementDelete').attr('onclick', 'DeleteRow(' + (i - 1) + ')');
+                $('#element-' + i).attr('id', 'element-' + (i - 1));
+            }
+            $('#ParticipantList').attr('data-count', countVal - 1);
+        }
     }
 </script>
