@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using WebApplication2.Models;
 using WebApplication2.DB;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Web;
+using System.Text;
 
 namespace WebApplication2.Controllers
 {
@@ -13,21 +15,26 @@ namespace WebApplication2.Controllers
         {
             _context = context;
         }
-        public IActionResult ViewersView(int votingEventId)
+        public IActionResult ViewersView(int votingEventId, List<User> newUsers = null)
         {
             if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
             {
                 return RedirectToAction("Index", "Login");
             }
-            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).Include(e => e.Viewers).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Users).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
             if (votingEvent != null)
             {
                 ViewData["votingEventId"] = votingEventId;
-                return View("ViewersEdit", votingEvent.Viewers);
+                List<User> users = votingEvent.Users.ToList();
+                if (newUsers != null)
+                {
+                    users.AddRange(newUsers);
+                }
+                return View("ViewersEdit", users);
             }
             return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
         }
-        public IActionResult ViewersViewList(int votingEventId, List<Viewer> viewers)
+        public IActionResult ViewersViewList(int votingEventId, List<User> viewers)
         {
             if (Request.Cookies["sessionId"] == null || !Crypto.CheckSessionID(Request.Cookies["sessionId"]?.ToString()))
             {
@@ -38,20 +45,16 @@ namespace WebApplication2.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateViewers(int votingEventId, List<Viewer> viewers, string buttonParams = "")
+        public IActionResult UpdateViewers(int votingEventId, List<User> viewers, string buttonParams = "")
         {
             var buttonValues = buttonParams.Split(',');
             foreach (var v in buttonValues)
             {
                 if (v != "" && Int32.TryParse(v, out int id))
                 {
-                    var tempViewer = _context.Viewers.Include(e => e.Email).Include(e => e.UniqueKey).Include(e => e.Votes).FirstOrDefault(e => e.Id == id && e.VotingEventId == votingEventId);
+                    var tempViewer = _context.Users.Include(e => e.Votes).FirstOrDefault(e => e.Id == id && e.VotingEventId == votingEventId);
                     _context.Votes.RemoveRange(tempViewer.Votes);
-                    if (tempViewer.UniqueKey != null)
-                    {
-                        _context.UniqueKeys.Remove(tempViewer.UniqueKey);
-                    }
-                    _context.Viewers.Remove(tempViewer);
+                    _context.Users.Remove(tempViewer);
                 }
             }
             _context.SaveChanges();
@@ -59,18 +62,19 @@ namespace WebApplication2.Controllers
             {
                 if (viewer.Id != null)
                 {
-                    var tempViewer = _context.Viewers.Include(e => e.Email).FirstOrDefault(e => e.Id == viewer.Id && e.VotingEventId == votingEventId);
+                    var tempViewer = _context.Users.FirstOrDefault(e => e.Id == viewer.Id && e.VotingEventId == votingEventId);
                     if (tempViewer == null)
                     {
                         return RedirectToAction("VotingEventEdit", "VotingEvents", new { votingEventId = votingEventId });
                     }
                     tempViewer.Name = viewer.Name;
-                    tempViewer.Email.EmailValue = viewer.Email.EmailValue;
+                    tempViewer.Email = viewer.Email;
                 }
                 else
                 {
                     viewer.VotingEventId = votingEventId;
-                    _context.Viewers.Add(viewer);
+                    viewer.Role = Convert.ToInt32("100", 2);
+                    _context.Users.Add(viewer);
                 }
             }
             try
@@ -81,7 +85,7 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            return RedirectToAction("ViewersView", new { votingEventId = votingEventId } );
+            return RedirectToAction("ViewersView", new { votingEventId = votingEventId });
         }
 
         public IActionResult ViewersInvitesView(int votingEventId)
@@ -90,9 +94,9 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).Include(e => e.Viewers).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
+            VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Users).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
             ViewData["votingEventId"] = votingEventId;
-            return View("ViewersInvite", votingEvent.Viewers);
+            return View("ViewersInvite", votingEvent.Users);
         }
 
         public IActionResult ViewersSendInvites(int votingEventId, string buttonParams)
@@ -104,26 +108,26 @@ namespace WebApplication2.Controllers
                 {
                     return RedirectToAction("Index", "Login");
                 }
-                VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Viewers).ThenInclude(e => e.Email).Include(e => e.Viewers).ThenInclude(e => e.Votes).Include(e => e.Viewers).ThenInclude(e => e.UniqueKey).FirstOrDefault(e => e.Id == votingEventId);
+                VotingEvent votingEvent = _context.VotingEvents.Include(e => e.Users).ThenInclude(e => e.Votes).FirstOrDefault(e => e.Id == votingEventId);
                 if (votingEvent != null)
                 {
                     switch (buttonParameters[0])
                     {
                         case "sendNew":
                             {
-                                CreateURLs(votingEvent.Viewers.Where(e => e.UniqueKey == null).ToList(), true);
+                                CreateURLs(votingEvent.Users.Where(e => e.UniqueKey == null).ToList(), true);
                                 break;
                             }
                         case "sendAll":
                             {
-                                CreateURLs(votingEvent.Viewers.ToList(), true);
+                                CreateURLs(votingEvent.Users.ToList(), true);
                                 break;
                             }
                         case "sendSingle":
                             {
                                 if (Int32.TryParse(buttonParameters[1], out int vId))
                                 {
-                                    CreateURLs(votingEvent.Viewers.Where(e => e.Id == vId).ToList(), true);
+                                    CreateURLs(votingEvent.Users.Where(e => e.Id == vId).ToList(), true);
                                 }
                                 break;
                             }
@@ -137,45 +141,17 @@ namespace WebApplication2.Controllers
             return ViewersInvitesView(votingEventId);
         }
 
-        private bool CreateURLs(List<Viewer> viewers, bool sendEmail)
+        private bool CreateURLs(List<User> viewers, bool sendEmail)
         {
             if (viewers.Count == 0)
             {
                 return false;
             }
-            var uniqueKeys = new UniqueKey[viewers.Count];
 
-            for (int i = 0; i < viewers.Count; i++)
-            {
-                uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = Guid.NewGuid().ToString() };
-            }
-
-            foreach (UniqueKey x in uniqueKeys)
-            {
-                bool identityFlag = true;
-                do
-                {
-                    identityFlag = true;
-                    try
-                    {
-                        _context.UniqueKeys.Add(x);
-                        _context.SaveChanges();
-                    }
-                    catch
-                    {
-                        identityFlag = false;
-                        x.UniqueKeyValue = Guid.NewGuid().ToString();
-                    }
-                } while (!identityFlag);
-            }
             int count = 0;
             foreach (var viewer in viewers)
             {
-                if (viewer.UniqueKey != null)
-                {
-                    _context.UniqueKeys.Remove(viewer.UniqueKey);
-                }
-                viewer.UniqueKeyId = uniqueKeys[count].Id;
+                viewer.UniqueKey = Guid.NewGuid().ToString();
                 _context.Update(viewer);
                 count++;
             }
@@ -186,13 +162,54 @@ namespace WebApplication2.Controllers
                 count = 0;
                 foreach (var viewer in viewers)
                 {
-                    emails[count] = viewer.Email.EmailValue;
-                    urls[count] = $"https://192.168.0.108:80/Votes/VotesView?userId={Crypto.GUIDLengthifyer(viewer.UniqueKey.UniqueKeyValue)}";
+                    emails[count] = viewer.Email;
+                    urls[count] = $"https://192.168.0.108:80/Votes/VotesView?userId={Crypto.GUIDLengthifyer(viewer.UniqueKey)}";
                     count++;
                 }
                 MailSender.SendInvites(emails, urls);
             }
             return true;
+        }
+
+        public IActionResult ViewersUpload(int votingEventId)
+        {
+            ViewData["votingEventId"] = votingEventId;
+            return View("ViewersUpload");
+        }
+
+        [HttpPost]
+        public IActionResult ViewersUploadPost(int votingEventId, IFormFile uploadFile)
+        {
+            try
+            {
+                if (uploadFile != null && uploadFile.Length > 0)
+                {
+                    using (var streamReader = new StreamReader(uploadFile.OpenReadStream(), Encoding.GetEncoding(1251)))
+                    {
+                        List<User> users = new List<User>();
+                        bool skipFirstLineFlag = true;
+                        while (!streamReader.EndOfStream)
+                        {
+                            string line = streamReader.ReadLine();
+                            if (skipFirstLineFlag)
+                            {
+                                skipFirstLineFlag = false;
+                                continue;
+                            }
+                            users.Add(new User() { Name = line.Split(';')[0], Email = line.Split(';')[1], Role = Convert.ToInt32("100", 2) });
+                        }
+                        return ViewersView(votingEventId, users);
+                    }
+                }
+                else
+                {
+                    return BadRequest("Файл не выбран или пуст.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Index", "Login");
+            }
         }
 
         public IActionResult ViewersSendSingleInvite(int votingEventId, int viewerId)

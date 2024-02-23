@@ -21,21 +21,42 @@
         @{
             foreach (var project in Model.Projects)
             {
-                <div class="prog-vote">@project.Title</div>
-                <div class="score-case">
-                    @{
-                        for (int i = 1; i <= 5; i++)
-                        {
-                            if (((Dictionary<int, int>)ViewData["votes"]).TryGetValue(project.Id, out int score) && score == i)
+                <div class="container-vote-project">
+                    <div class="prog-vote" style="text-align: center; font-style: italic; font-family: Arial; font-size: 22px;">"@project.Title"</div>
+                    <div style="width: 100%;">
+                        @{
+                            List<KeyValuePair<string, double>> criterias = new List<KeyValuePair<string, double>>();
+                            foreach (string x in Model.Criterias.Split(';'))
                             {
-                                <a class="score-selected" asp-action="VotesApply" asp-controller="Votes" asp-route-userId="@ViewData["userId"]" asp-route-teamId="@project.Id" asp-route-score="@i">@i</a>
+                                string[] tempStr = x.Split(':');
+                                criterias.Add(new KeyValuePair<string, double>(tempStr[0], Convert.ToDouble(tempStr[1])));
                             }
-                            else
+                            int criteriaId = 0;
+                            foreach (var criteria in criterias)
                             {
-                                <a class="score" asp-action="VotesApply" asp-controller="Votes" asp-route-userId="@ViewData["userId"]" asp-route-teamId="@project.Id" asp-route-score="@i">@i</a>
+                                <div style="text-align: center; position: relative; top: 15px; font-family: Arial; font-size: 20px;">
+                                    @criteria.Key
+                                </div>
+                                <div class="score-case">
+                                    @{
+                                        for (int i = 1; i <= 5; i++)
+                                        {
+                                            var tempVotes = ((List<KeyValuePair<int, KeyValuePair<int, int>>>)ViewData["votes"]).FindAll(x => x.Key == project.Id);
+                                            if (tempVotes.Exists(x => x.Value.Key == i && x.Value.Value == criteriaId))
+                                            {
+                                                <a class="score-selected" asp-action="VotesApply" asp-controller="Votes" asp-route-userId="@ViewData["userId"]" asp-route-teamId="@project.Id" asp-route-score="@i" asp-route-criteriaId="@criteriaId">@i</a>
+                                            }
+                                            else
+                                            {
+                                                <a class="score" asp-action="VotesApply" asp-controller="Votes" asp-route-userId="@ViewData["userId"]" asp-route-teamId="@project.Id" asp-route-score="@i" asp-route-criteriaId="@criteriaId">@i</a>
+                                            }
+                                        }
+                                    }
+                                </div>
+                                criteriaId++;
                             }
                         }
-                    }
+                    </div>
                 </div>
             }
         }

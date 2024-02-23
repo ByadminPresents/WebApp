@@ -24,13 +24,11 @@
     <div class="container-cp">
         <form asp-action="TeamCreate" method="post">
             <input asp-for="VotingEventId" type="hidden" />
-            <label asp-for="Title"></label>
             <div class="form-group">
                 <label for="title">Название проекта:</label>
                 <input asp-for="Title" required>
                 <span asp-validation-for="Title"></span>
             </div>
-            <label asp-for="Description"></label>
             <div class="form-group">
                 <label for="description">Описание:</label>
                 <input asp-for="Description" required>
@@ -39,14 +37,14 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>email</th>
+                        <th>ФИО</th>
+                        <th>Эл. почта</th>
                     </tr>
                 </thead>
                 <tbody id="ParticipantList" data-count="0">
                     <tr id="element-0">
-                        <td><input id="elementName" type="text" name="Participants[0].Name" class="form-control" required/></td>
-                        <td><input id="elementEmail" type="text" name="Participants[0].Email.EmailValue" class="form-control" required/></td>
+                        <td><input id="elementName" type="text" name="Users[0].Name" class="form-control" required /></td>
+                        <td><input id="elementEmail" type="text" name="Users[0].Email" class="form-control" required /></td>
                         <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
                     </tr>
                 </tbody>
@@ -69,8 +67,8 @@
         countVal += 1;
         var html = '';
         html += '<tr id="element-' + countVal + '">';
-        html += '<td><input id="elementName" type="text" name="Participants[' + countVal + '].Name" class="form-control" required/></td>';
-        html += '<td><input id="elementEmail" type="text" name="Participants[' + countVal + '].Email.EmailValue" class="form-control" required/></td>';
+        html += '<td><input id="elementName" type="text" name="Users[' + countVal + '].Name" class="form-control" required/></td>';
+        html += '<td><input id="elementEmail" type="text" name="Users[' + countVal + '].Email" class="form-control" required/></td>';
         html += '<td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(' + countVal + ')">X</button></td>';
         html += '</tr>';
         $('#ParticipantList').append(html);
@@ -81,8 +79,8 @@
         if (countVal != -1) {
             $('#element-' + id).remove();
             for (i = id + 1; i < countVal + 1; i++) {
-                $('#element-' + i).find('#elementName').attr('name', 'Participants[' + (i - 1) + '].Name');
-                $('#element-' + i).find('#elementEmail').attr('name', 'Participants[' + (i - 1) + '].Email.EmailValue');
+                $('#element-' + i).find('#elementName').attr('name', 'Users[' + (i - 1) + '].Name');
+                $('#element-' + i).find('#elementEmail').attr('name', 'Users[' + (i - 1) + '].Email');
                 $('#element-' + i).find('#elementDelete').attr('onclick', 'DeleteRow(' + (i - 1) + ')');
                 $('#element-' + i).attr('id', 'element-' + (i - 1));
             }

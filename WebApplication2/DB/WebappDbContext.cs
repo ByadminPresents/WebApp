@@ -16,17 +16,9 @@ public partial class WebappDbContext : DbContext
     {
     }
 
-    public virtual DbSet<Email> Emails { get; set; }
-
-    public virtual DbSet<Organizer> Organizers { get; set; }
-
-    public virtual DbSet<Participant> Participants { get; set; }
-
     public virtual DbSet<Project> Projects { get; set; }
 
-    public virtual DbSet<UniqueKey> UniqueKeys { get; set; }
-
-    public virtual DbSet<Viewer> Viewers { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Vote> Votes { get; set; }
 
@@ -34,77 +26,110 @@ public partial class WebappDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=BYADMINPRESENTS;Initial Catalog=WEBAppDB;Integrated Security=True;Trust Server Certificate=True");
+        => optionsBuilder.UseSqlServer("Server=BYADMINPRESENTS; Database=WEBAppDB; Trusted_Connection=True; TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Organizer>(entity =>
-        {
-            entity.HasOne(d => d.Email).WithMany(p => p.Organizers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Organizer_Email");
-
-            entity.HasOne(d => d.UniqueKey).WithMany(p => p.Organizers).HasConstraintName("FK_Organizer_UniqueKey");
-        });
-
-        modelBuilder.Entity<Participant>(entity =>
-        {
-            entity.HasOne(d => d.Email).WithMany(p => p.Participants).HasConstraintName("FK_Participant_Email");
-
-            entity.HasOne(d => d.Project).WithMany(p => p.Participants)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Participant_Project");
-
-            entity.HasOne(d => d.UniqueKey).WithMany(p => p.Participants).HasConstraintName("FK_Participant_UniqueKey");
-        });
-
         modelBuilder.Entity<Project>(entity =>
         {
+            entity.ToTable("Project");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Description)
+                .HasMaxLength(300)
+                .HasColumnName("description");
+            entity.Property(e => e.Title)
+                .HasMaxLength(50)
+                .HasColumnName("title");
+            entity.Property(e => e.VotingEventId).HasColumnName("votingEvent_id");
+
             entity.HasOne(d => d.VotingEvent).WithMany(p => p.Projects)
+                .HasForeignKey(d => d.VotingEventId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Project_VotingEvent");
         });
 
-        modelBuilder.Entity<Viewer>(entity =>
+        modelBuilder.Entity<User>(entity =>
         {
-            entity.HasOne(d => d.Email).WithMany(p => p.Viewers).HasForeignKey(k => k.EmailId)
-                .HasConstraintName("FK_Viewer_Email");
+            entity.ToTable("User");
 
-            entity.HasOne(d => d.UniqueKey).WithMany(p => p.Viewers).HasForeignKey(k => k.UniqueKeyId).HasConstraintName("FK_Viewer_UniqueKey");
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Login)
+                .HasMaxLength(60)
+                .HasColumnName("login");
+            entity.Property(e => e.Email)
+                .HasMaxLength(100)
+                .HasColumnName("email");
+            entity.Property(e => e.Name)
+                .HasMaxLength(60)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.Password)
+                .HasMaxLength(150)
+                .HasColumnName("password");
+            entity.Property(e => e.ProjectId).HasColumnName("project_id");
+            entity.Property(e => e.Role).HasColumnName("role");
+            entity.Property(e => e.UniqueKey)
+                .HasMaxLength(36)
+                .HasColumnName("uniqueKey");
+            entity.Property(e => e.VotingEventId).HasColumnName("votingEvent_id");
 
-            entity.HasOne(d => d.VotingEvent).WithMany(p => p.Viewers)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Viewer_VotingEvent");
+            entity.HasOne(d => d.Project).WithMany(p => p.Users)
+                .HasForeignKey(d => d.ProjectId)
+                .HasConstraintName("FK_User_Project");
+
+            entity.HasOne(d => d.VotingEvent).WithMany(p => p.Users)
+                .HasForeignKey(d => d.VotingEventId)
+                .HasConstraintName("FK_User_VotingEvent");
         });
 
-        //modelBuilder.Entity<UniqueKey>(entity =>
-        //{
-        //    entity.HasMany(d => d.Viewers).WithOne(p => p.UniqueKey).HasForeignKey(k => k.UniqueKeyId).OnDelete(DeleteBehavior.Cascade);
-
-        //});
-
-        //modelBuilder.Entity<Email>(entity =>
-        //{
-        //    entity.HasMany(d => d.Viewers).WithOne(p => p.Email).HasForeignKey(k => k.EmailId).OnDelete(DeleteBehavior.Cascade);
-
-        //});
-
-            modelBuilder.Entity<Vote>(entity =>
+        modelBuilder.Entity<Vote>(entity =>
         {
+            entity.ToTable("Vote");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Criteria).HasColumnName("criteria");
+            entity.Property(e => e.ProjectId).HasColumnName("project_id");
+            entity.Property(e => e.Score).HasColumnName("score");
+            entity.Property(e => e.ViewerId).HasColumnName("viewer_id");
+
             entity.HasOne(d => d.Project).WithMany(p => p.Votes)
+                .HasForeignKey(d => d.ProjectId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Vote_Project");
 
             entity.HasOne(d => d.Viewer).WithMany(p => p.Votes)
+                .HasForeignKey(d => d.ViewerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Vote_Viewer");
+                .HasConstraintName("FK_Vote_User");
         });
 
         modelBuilder.Entity<VotingEvent>(entity =>
         {
+            entity.ToTable("VotingEvent");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Criterias)
+                .HasMaxLength(150)
+                .HasColumnName("criterias");
+            entity.Property(e => e.Datetime)
+                .HasColumnType("datetime")
+                .HasColumnName("datetime");
+            entity.Property(e => e.Description)
+                .HasMaxLength(150)
+                .HasColumnName("description");
+            entity.Property(e => e.Location)
+                .HasMaxLength(70)
+                .HasColumnName("location");
+            entity.Property(e => e.Name)
+                .HasMaxLength(50)
+                .HasColumnName("name");
+            entity.Property(e => e.OrganizerId).HasColumnName("organizer_id");
+
             entity.HasOne(d => d.Organizer).WithMany(p => p.VotingEvents)
+                .HasForeignKey(d => d.OrganizerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_VotingEvent_Organizer");
+                .HasConstraintName("FK_VotingEvent_User");
         });
 
         OnModelCreatingPartial(modelBuilder);

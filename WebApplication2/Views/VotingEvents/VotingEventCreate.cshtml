@@ -21,25 +21,21 @@
 
     <div class="container-cp">
         <form asp-action="VotingEventCreate" method="post">
-            <label asp-for="Name"></label>
             <div class="form-group">
                 <label for="eventName">Название конференции:</label>
                 <input asp-for="Name" required>
                 <span asp-validation-for="Name"></span>
             </div>
-            <label asp-for="Description"></label>
             <div class="form-group">
                 <label for="description">Тема:</label>
                 <input asp-for="Description" required>
                 <span asp-validation-for="Description"></span>
             </div>
-            <label asp-for="Location"></label>
             <div class="form-group">
                 <label for="Location">Место проведения:</label>
                 <input asp-for="Location" required>
                 <span asp-validation-for="Location"></span>
             </div>
-            <label asp-for="Datetime"></label>
             <div class="form-group">
                 <label for="Datetime">Время проведения:</label>
                 <input asp-for="Datetime" required>

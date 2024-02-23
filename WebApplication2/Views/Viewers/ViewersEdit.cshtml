@@ -1,4 +1,4 @@
-﻿@model List<Viewer>
+﻿@model List<User>
 @{
     Layout = null;
 }
@@ -21,6 +21,7 @@
         @using (Html.BeginForm("UpdateViewers", "Viewers", FormMethod.Post))
         {
             <button type="submit" id="submitButton" name="buttonParams" value="">Сохранить изменения</button>
+            <a asp-controller="Viewers" asp-action="ViewersUpload" asp-route-votingEventId="@ViewData["votingEventId"]"><button type="button">Загрузить файл</button></a>
             <input type="hidden" name="votingEventId" value="@ViewData["votingEventId"]" class="form-control" />
             <table>
                 <thead>
@@ -46,7 +47,7 @@
                                 <tr id="element-@count">
                                     <td><input id="elementId" type="hidden" name="viewers[@count].Id" value="@viewer.Id" class="form-control" /></td>
                                     <td><input id="elementName" type="text" name="viewers[@count].Name" value="@viewer.Name" class="form-control" required /></td>
-                                    <td><input id="elementEmail" type="text" name="viewers[@count].Email.EmailValue" value="@viewer.Email.EmailValue" class="form-control" required /></td>
+                                    <td><input id="elementEmail" type="text" name="viewers[@count].Email" value="@viewer.Email" class="form-control" required /></td>
                                     <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
                                     <td>@viewer.Votes.Count</td>
                                 </tr>
@@ -57,7 +58,7 @@
                                 <tr id="element-0">
                                     <td><input id="elementId" type="hidden" name="viewers[0].Id" class="form-control" /></td>
                                     <td><input id="elementName" type="text" name="viewers[0].Name" class="form-control" required /></td>
-                                    <td><input id="elementEmail" type="text" name="viewers[0].Email.EmailValue" class="form-control" required /></td>
+                                    <td><input id="elementEmail" type="text" name="viewers[0].Email" class="form-control" required /></td>
                                     <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
                                     <td>0</td>
                                 </tr>
@@ -80,7 +81,7 @@
         html += '<tr id="element-' + countVal + '">';
         html += '<td><input id="elementId" type="hidden" name="viewers[' + countVal + '].Id" class="form-control" required/></td>';
         html += '<td><input id="elementName" type="text" name="viewers[' + countVal + '].Name" class="form-control" required/></td>';
-        html += '<td><input id="elementEmail" type="text" name="viewers[' + countVal + '].Email.EmailValue" class="form-control" required/></td>';
+        html += '<td><input id="elementEmail" type="text" name="viewers[' + countVal + '].Email" class="form-control" required/></td>';
         html += '<td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(' + countVal + ')">X</button></td>';
         html += '<td>0</td>';
         html += '</tr>';
@@ -97,7 +98,7 @@
             for (i = id + 1; i < countVal + 1; i++) {
                 $('#element-' + i).find('#elementId').attr('name', 'viewers[' + (i - 1) + '].Id');
                 $('#element-' + i).find('#elementName').attr('name', 'viewers[' + (i - 1) + '].Name');
-                $('#element-' + i).find('#elementEmail').attr('name', 'viewers[' + (i - 1) + '].Email.EmailValue');
+                $('#element-' + i).find('#elementEmail').attr('name', 'viewers[' + (i - 1) + '].Email');
                 $('#element-' + i).find('#elementDelete').attr('onclick', 'DeleteRow(' + (i - 1) + ')');
                 $('#element-' + i).attr('id', 'element-' + (i - 1));
             }

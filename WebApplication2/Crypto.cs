@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
+using System.Text;
 using WebApplication2.DB;
 
 namespace WebApplication2
@@ -32,7 +33,7 @@ namespace WebApplication2
                 return false;
             }
             var context = new WebappDbContext();
-            if (context.Organizers.Include(e => e.UniqueKey).FirstOrDefault(e => e.UniqueKey.UniqueKeyValue == DecryptIDToUniqueKey(decSessionId)) == null)
+            if (context.Users.FirstOrDefault(e => e.UniqueKey == DecryptIDToUniqueKey(decSessionId)) == null)
             {
                 context.Dispose();
                 return false;
@@ -47,14 +48,14 @@ namespace WebApplication2
         {
             var context = new WebappDbContext();
 
-            var item = context.Organizers.Include(e => e.Email).Include(e => e.UniqueKey).FirstOrDefault(e => e.Email.EmailValue == login && e.Password == password);
+            var item = context.Users.FirstOrDefault(e => e.Login == login && e.Password == GetPasswordHash(password));
 
             if (item == null)
             {
                 return null;
             }
 
-            return EncryptID(item.UniqueKey.UniqueKeyValue);
+            return EncryptID(item.UniqueKey);
         }
         public static string EncryptID(string sessionId)
         {
@@ -198,6 +199,42 @@ namespace WebApplication2
         {
             string guid = longguid;
             return guid;
+        }
+
+        public static string GetPasswordHash(string password)
+        {
+            var sb = new StringBuilder();
+            var hash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(password));
+            foreach (var b in hash)
+            {
+                sb.Append(b.ToString("X2"));
+            }
+            return sb.ToString();
+        }
+
+        public static bool AndComparingBitsWithMask(int number, int mask)
+        {
+            int numberBitsCount = 0, maskBitsCount = 0;
+            for (int i = 0; i < sizeof(int) * 8; i++)
+            {
+                if (((mask >> i) & 1) == 1)
+                {
+                    maskBitsCount++;
+                    if (((number >> i) & 1) == 1)
+                    {
+                        numberBitsCount++;
+                    }
+                }
+            }
+
+            return numberBitsCount == maskBitsCount;
+        }
+
+        public static string CheckLoginAvailability(string login)
+        {
+            var context = new WebappDbContext();
+            return "";
+            
         }
     }
 }

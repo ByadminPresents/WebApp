@@ -20,6 +20,11 @@ namespace WebApplication2.Controllers
             return View("Login");
         }
 
+        public IActionResult Register()
+        {
+            return View("Register");
+        }
+
         [HttpPost]
         public IActionResult Login(string login, string password)
         {
@@ -42,6 +47,15 @@ namespace WebApplication2.Controllers
                 _httpContextAccessor.HttpContext.Response.Cookies.Append("sessionId", sessionId, options);
             }
             return RedirectToAction("VotingEventsList", "VotingEvents");
+        }
+
+        [HttpPost]
+        public IActionResult RegisterPost(string name, string login, string email, string password)
+        {
+            _context.Users.Add(new Models.User() { Name = name, Login = login, Email = email, Password = Crypto.GetPasswordHash(password), Role = Convert.ToInt32("1", 2), UniqueKey = Guid.NewGuid().ToString() });
+            _context.SaveChanges();
+            ViewData["Login"] = login;
+            return View("Login");
         }
     }
 }

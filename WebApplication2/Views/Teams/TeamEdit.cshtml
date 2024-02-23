@@ -27,13 +27,11 @@
         {
             <input asp-for="VotingEventId" type="hidden" value="@Model.VotingEventId" />
             <input asp-for="Id" type="hidden" value="@Model.Id" />
-            <label asp-for="Title"></label>
             <div class="form-group">
                 <label for="title">Название проекта:</label>
                 <input asp-for="Title" required>
                 <span asp-validation-for="Title"></span>
             </div>
-            <label asp-for="Description"></label>
             <div class="form-group">
                 <label for="description">Описание:</label>
                 <input asp-for="Description" required>
@@ -43,35 +41,35 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th>
-                        <th>email</th>
+                        <th>ФИО</th>
+                        <th>Эл. почта</th>
                     </tr>
                 </thead>
                 @{
                     int elementsCount = 0;
-                    if (Model.Participants.Count > 0)
+                    if (Model.Users.Count > 0)
                     {
-                        elementsCount = Model.Participants.Count - 1;
+                        elementsCount = Model.Users.Count - 1;
                     }
-                    <tbody id="ParticipantList" data-count="@elementsCount">
+                    <tbody id="UsersList" data-count="@elementsCount">
                         @{
                             int count = 0;
-                            foreach (var participant in Model.Participants)
+                            foreach (var participant in Model.Users)
                             {
                                 <tr id="element-@count">
-                                    <td><input id="elementId" type="hidden" name="Participants[@count].Id" value="@participant.Id" class="form-control" required /></td>
-                                    <td><input id="elementName" type="text" name="Participants[@count].Name" value="@participant.Name" class="form-control" required /></td>
-                                    <td><input id="elementEmail" type="text" name="Participants[@count].Email.EmailValue" value="@participant.Email?.EmailValue" class="form-control" required /></td>
+                                    <td><input id="elementId" type="hidden" name="Users[@count].Id" value="@participant.Id" class="form-control" required /></td>
+                                    <td><input id="elementName" type="text" name="Users[@count].Name" value="@participant.Name" class="form-control" required /></td>
+                                    <td><input id="elementEmail" type="text" name="Users[@count].Email" value="@participant.Email" class="form-control" required /></td>
                                     <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
                                 </tr>
                                 count++;
                             }
-                            if (Model.Participants.Count == 0)
+                            if (Model.Users.Count == 0)
                             {
                                 <tr id="element-0">
-                                    <td><input id="elementId" type="hidden" name="Participants[0].Id" class="form-control" required /></td>
-                                    <td><input id="elementName" type="text" name="Participants[0].Name" class="form-control" required /></td>
-                                    <td><input id="elementEmail" type="text" name="Participants[0].Email.EmailValue" class="form-control" required /></td>
+                                    <td><input id="elementId" type="hidden" name="Users[0].Id" class="form-control" required /></td>
+                                    <td><input id="elementName" type="text" name="Users[0].Name" class="form-control" required /></td>
+                                    <td><input id="elementEmail" type="text" name="Users[0].Email" class="form-control" required /></td>
                                     <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
                                 </tr>
                             }
@@ -97,9 +95,9 @@
         countVal += 1;
         var html = '';
         html += '<tr id="element-' + countVal + '">';
-        html += '<td><input id="elementId" type="hidden" type="text" name="Participants[' + countVal + '].Id" class="form-control"/></td>';
-        html += '<td><input id="elementName" type="text" name="Participants[' + countVal + '].Name" class="form-control" required/></td>';
-        html += '<td><input id="elementEmail" type="text" name="Participants[' + countVal + '].Email.EmailValue" class="form-control" required/></td>';
+        html += '<td><input id="elementId" type="hidden" type="text" name="Users[' + countVal + '].Id" class="form-control"/></td>';
+        html += '<td><input id="elementName" type="text" name="Users[' + countVal + '].Name" class="form-control" required/></td>';
+        html += '<td><input id="elementEmail" type="text" name="Users[' + countVal + '].Email" class="form-control" required/></td>';
         html += '<td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(' + countVal + ')">X</button></td>';
         html += '</tr>';
         $('#ParticipantList').append(html);
@@ -113,9 +111,9 @@
             }
             $('#element-' + id).remove();
             for (i = id + 1; i < countVal + 1; i++) {
-                $('#element-' + i).find('#elementId').attr('name', 'Participants[' + (i - 1) + '].Id');
-                $('#element-' + i).find('#elementName').attr('name', 'Participants[' + (i - 1) + '].Name');
-                $('#element-' + i).find('#elementEmail').attr('name', 'Participants[' + (i - 1) + '].Email.EmailValue');
+                $('#element-' + i).find('#elementId').attr('name', 'Users[' + (i - 1) + '].Id');
+                $('#element-' + i).find('#elementName').attr('name', 'Users[' + (i - 1) + '].Name');
+                $('#element-' + i).find('#elementEmail').attr('name', 'Users[' + (i - 1) + '].Email');
                 $('#element-' + i).find('#elementDelete').attr('onclick', 'DeleteRow(' + (i - 1) + ')');
                 $('#element-' + i).attr('id', 'element-' + (i - 1));
             }

@@ -1,4 +1,4 @@
-﻿@model List<Viewer>
+﻿@model List<User>
 @{
     Layout = null;
 }
@@ -39,9 +39,9 @@
                         {
                             <tr>
                                 <td><p> @viewer.Name</p></td>
-                                <td><p> @viewer.Email.EmailValue</p></td>
+                                <td><p> @viewer.Email</p></td>
                                 @{
-                                    if (viewer.UniqueKeyId == null)
+                                    if (viewer.UniqueKey == null)
                                     {
                                         <td><button type="submit" name="buttonParams" value="sendSingle:@viewer.Id" class="btn">✉</button></td>
                                     }

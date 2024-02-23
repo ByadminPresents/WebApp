@@ -50,7 +50,7 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            var project = _context.Projects.Include(e => e.Participants).ThenInclude(e => e.Email).FirstOrDefault(e => e.Id == projectId && e.VotingEventId == votingEventId);
+            var project = _context.Projects.Include(e => e.Users).FirstOrDefault(e => e.Id == projectId && e.VotingEventId == votingEventId);
             if (project != null)
             {
                 ViewData["votingEventId"] = votingEventId;
@@ -62,46 +62,18 @@ namespace WebApplication2.Controllers
         [HttpPost]
         public async Task<IActionResult> TeamCreate(Project project)
         {
-            for (int i = 0; i < project.Participants.Count; i++)
+            for (int i = 0; i < project.Users.Count; i++)
             {
-                if (project.Participants.ToArray()[i].Name == null || project.Participants.ToArray()[i].Name == "")
-                    project.Participants.Remove(project.Participants.ToArray()[i]);
+                if (project.Users.ToArray()[i].Name == null || project.Users.ToArray()[i].Name == "")
+                    project.Users.Remove(project.Users.ToArray()[i]);
             }
 
             _context.Projects.Add(project);
-
-            var uniqueKeys = new UniqueKey[project.Participants.Count];
-
-            for (int i = 0; i < project.Participants.Count; i++)
-            {
-                uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = Guid.NewGuid().ToString() };
-                //uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = "not_unique_key" };
-            }
-
-            foreach (UniqueKey x in uniqueKeys)
-            {
-                bool identityFlag = true;
-                do
-                {
-                    identityFlag = true;
-                    try
-                    {
-                        _context.UniqueKeys.Add(x);
-                        _context.SaveChanges();
-                    }
-                    catch
-                    {
-                        identityFlag = false;
-                        x.UniqueKeyValue = Guid.NewGuid().ToString();
-                    }
-                } while (!identityFlag);
-            }
-
             int count = 0;
-            foreach (var x in project.Participants)
+            foreach (var x in project.Users)
             {
-                x.UniqueKeyId = uniqueKeys[count].Id;
-                _context.Update(x);
+                x.UniqueKey = Guid.NewGuid().ToString();
+                x.Role = Convert.ToInt32("10", 2);
                 count++;
             }
 
@@ -116,22 +88,20 @@ namespace WebApplication2.Controllers
             {
                 if (v != "" && Int32.TryParse(v, out int id))
                 {
-                    var tempParticipant = _context.Participants.Include(e => e.UniqueKey).Include(e => e.Email).FirstOrDefault(e => e.Id == id && e.ProjectId == project.Id);
+                    var tempParticipant = _context.Users.FirstOrDefault(e => e.Id == id && e.ProjectId == project.Id);
                     if (tempParticipant != null)
                     {
-                        _context.Emails.Remove(tempParticipant.Email);
-                        _context.UniqueKeys.Remove(tempParticipant.UniqueKey);
-                        _context.Participants.Remove(tempParticipant);
+                        _context.Users.Remove(tempParticipant);
                     }
                 }
             }
-            var contextProject = _context.Projects.Include(e => e.Participants).ThenInclude(e => e.Email).FirstOrDefault(e => e.Id == project.Id);
+            var contextProject = _context.Projects.Include(e => e.Users).FirstOrDefault(e => e.Id == project.Id);
             if (contextProject != null)
             {
                 contextProject.Title = project.Title;
                 contextProject.Description = project.Description;
-                var newParticipants = project.Participants.Where(p => p.Id == null).ToList();
-                var oldParticipants = project.Participants.Where(p => p.Id != null).ToList();
+                var newParticipants = project.Users.Where(p => p.Id == null).ToList();
+                var oldParticipants = project.Users.Where(p => p.Id != null).ToList();
                 for (int i = 0; i < newParticipants.Count; i++)
                 {
                     if (newParticipants[i].Name == null || newParticipants[i].Name == "")
@@ -140,49 +110,23 @@ namespace WebApplication2.Controllers
                     }
                 }
 
-                var uniqueKeys = new UniqueKey[newParticipants.Count];
-
-                for (int i = 0; i < newParticipants.Count; i++)
-                {
-                    uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = Guid.NewGuid().ToString() };
-                    //uniqueKeys[i] = new UniqueKey() { UniqueKeyValue = "not_unique_key" };
-                }
-
-                foreach (UniqueKey x in uniqueKeys)
-                {
-                    bool identityFlag = true;
-                    do
-                    {
-                        identityFlag = true;
-                        try
-                        {
-                            _context.UniqueKeys.Add(x);
-                            _context.SaveChanges();
-                        }
-                        catch
-                        {
-                            identityFlag = false;
-                            x.UniqueKeyValue = Guid.NewGuid().ToString();
-                        }
-                    } while (!identityFlag);
-                }
-
                 int count = 0;
                 foreach (var x in newParticipants)
                 {
-                    x.UniqueKeyId = uniqueKeys[count].Id;
+                    x.UniqueKey = Guid.NewGuid().ToString();
                     x.ProjectId = project.Id;
-                    _context.Participants.Add(x);
+                    x.Role = Convert.ToInt32("10", 2);
+                    _context.Users.Add(x);
                     count++;
                 }
 
                 foreach (var x in oldParticipants)
                 {
-                    var tempParticipant = _context.Participants.Include(e => e.Email).FirstOrDefault(e => e.Id == x.Id && e.ProjectId == project.Id);
+                    var tempParticipant = _context.Users.FirstOrDefault(e => e.Id == x.Id && e.ProjectId == project.Id);
                     if (tempParticipant != null)
                     {
                         tempParticipant.Name = x.Name;
-                        tempParticipant.Email.EmailValue = x.Email?.EmailValue;
+                        tempParticipant.Email = x.Email;
                         _context.Update(tempParticipant);
                     }
                 }
@@ -199,15 +143,10 @@ namespace WebApplication2.Controllers
             {
                 return RedirectToAction("Index", "Login");
             }
-            var project = _context.Projects.Include(e => e.Participants).ThenInclude(e => e.Email).Include(e => e.Participants).ThenInclude(e => e.UniqueKey).Include(e => e.Votes).FirstOrDefault(e => e.Id == projectId && e.VotingEventId == votingEventId);
+            var project = _context.Projects.Include(e => e.Users).Include(e => e.Votes).FirstOrDefault(e => e.Id == projectId && e.VotingEventId == votingEventId);
             if (project != null)
             {
-                foreach (var x in project.Participants)
-                {
-                    _context.UniqueKeys.Remove(x.UniqueKey);
-                    _context.Emails.Remove(x.Email);
-                }
-                _context.Participants.RemoveRange(project.Participants);
+                _context.Users.RemoveRange(project.Users);
                 _context.Votes.RemoveRange(project.Votes);
                 _context.Projects.Remove(project);
                 _context.SaveChanges();

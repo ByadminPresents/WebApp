@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.WebEncoders;
+using System.Text;
 using System.Text.Unicode;
 using WebApplication2;
 using WebApplication2.DB;
@@ -22,6 +23,7 @@ builder.WebHost.UseIISIntegration();
 //builder.WebHost.UseKestrelHttpsConfiguration();
 //builder.WebHost.ConfigureKestrel(options => options.Listen(new System.Net.IPAddress(new byte[] { 192, 168, 0, 8 }), 80));
 
+//builder.WebHost.UseUrls(new string[] { "https://26.127.247.233:80" });
 builder.WebHost.UseUrls(new string[] { "https://192.168.0.108:80", "https://26.236.65.40:80" });
 
 
@@ -56,7 +58,9 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
-//pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
+    //pattern: "{controller=VotingEvents}/{action=VotingEventsList}");
+    pattern: "{controller=Login}/{action=RegisterView}");
+
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
 app.Run();
