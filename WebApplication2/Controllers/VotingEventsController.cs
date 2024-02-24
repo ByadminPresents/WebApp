@@ -73,7 +73,7 @@ namespace WebApplication2.Controllers
                 var criteriasWeights = new Dictionary<int, double>();
                 var criteriaNames = new Dictionary<int, string>();
                 int index = 0;
-                foreach (string x in votingEvent.Criterias.Split(';'))
+                foreach (string x in votingEvent.Criterias.Split('~'))
                 {
                     string[] tempStr = x.Split(':');
                     criteriaNames.Add(index, tempStr[0]);

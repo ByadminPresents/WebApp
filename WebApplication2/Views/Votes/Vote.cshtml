@@ -26,7 +26,7 @@
                     <div style="width: 100%;">
                         @{
                             List<KeyValuePair<string, double>> criterias = new List<KeyValuePair<string, double>>();
-                            foreach (string x in Model.Criterias.Split(';'))
+                            foreach (string x in Model.Criterias.Split('~'))
                             {
                                 string[] tempStr = x.Split(':');
                                 criterias.Add(new KeyValuePair<string, double>(tempStr[0], Convert.ToDouble(tempStr[1])));

@@ -19,7 +19,18 @@
     <div class="container-cp">
         @using (Html.BeginForm("UpdateCriterias", "Votes", FormMethod.Post))
         {
+            <div style="transform: translateX(-80px);">
             <button type="submit" id="submitButton">Сохранить изменения</button>
+            <input id="templateName" value="Новый шаблон" />
+                <button type="button" onclick="CreateNewTemplate()" id="submitButton">Сохранить шаблон</button>
+            <select name="Шаблоны" id="templates" onchange="TemplateChanged()">
+                <option value="@ViewData["votingCriteriasString"]">Текущий</option>
+                <option value="Оценка:1">Оценка</option>
+                <option value="Актуальность:1~Использование технологий:1~Ответы на вопросы:1">Расширенный</option>
+                </select>
+                <button type="button" class="btn" onclick="DeleteTemplate()">X</button>
+            </div>
+
             <input type="hidden" name="votingEventId" value="@ViewData["votingEventId"]" class="form-control" />
             <table>
                 <thead>
@@ -31,33 +42,33 @@
                 </thead>
                 @{
                     int elementsCount = 0;
-                    int criteriasCount = ((List<KeyValuePair<string, double>>)ViewData["votingCriterias"]).Count;
-                    if (criteriasCount > 0)
+                    var criterias = (List<KeyValuePair<string, double>>)ViewData["votingCriterias"];
+                    if (criterias.Count > 0)
                     {
-                        elementsCount = criteriasCount - 1;
+                        elementsCount = criterias.Count - 1;
                     }
-                    <tbody id="CriteriasList" data-count="@elementsCount">
-                        @{
+                                                    <tbody id="CriteriasList" data-count="@elementsCount">
+                                                        @{
                             int count = 0;
-                            foreach (var criteria in (List<KeyValuePair<string, double>>)ViewData["votingCriterias"])
+                            foreach (var criteria in criterias)
                             {
-                                <tr id="element-@count">
-                                    <td><input id="elementCriteria" type="text" name="criterias[@count].Key" value="@criteria.Key" class="form-control" required /></td>
-                                    <td><input id="elementWeight" type="text" inputmode="numeric" pattern="[0-9]+([,][0-9]+)?" name="criterias[@count].Value" value="@criteria.Value" class="form-control" step="0.05" min=0 required /></td>
-                                    <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
-                                </tr>
+                                                                                                <tr id="element-@count">
+                                                                                                    <td><input id="elementCriteria" type="text" name="criterias[@count].Key" value="@criteria.Key" class="form-control" required /></td>
+                                                                                                    <td><input id="elementWeight" type="text" inputmode="numeric" pattern="[0-9]+([,][0-9]+)?" name="criterias[@count].Value" value="@criteria.Value" class="form-control" step="0.05" min=0 required /></td>
+                                                                                                    <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(@count)">X</button></td>
+                                                                                                </tr>
                                 count++;
                             }
-                            if (criteriasCount == 0)
+                            if (criterias.Count == 0)
                             {
-                                <tr id="element-0">
-                                    <td><input id="elementCriteria" type="text" name="criterias[0].criteria" class="form-control" required /></td>
-                                    <td><input id="elementWeight" type="number" name="criterias[0].weight" class="form-control" step="0.05" min=0 required /></td>
-                                    <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
-                                </tr>
+                                                                                                <tr id="element-0">
+                                                                                                    <td><input id="elementCriteria" type="text" name="criterias[0].criteria" class="form-control" required /></td>
+                                                                                                    <td><input id="elementWeight" type="number" name="criterias[0].weight" class="form-control" step="0.05" min=0 required /></td>
+                                                                                                    <td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(0)">X</button></td>
+                                                                                                </tr>
                             }
-                        }
-                    </tbody>
+                                                        }
+                                                    </tbody>
                 }
             </table>
             <button type="button" class="btn" onclick="AddRow()" id="addRowButton" formnovalidate="formnovalidate">Добавить критерий</button>
@@ -67,23 +78,25 @@
 
 <script src="@Url.Content("~/lib/jquery/dist/jquery.js")" type="text/javascript"></script>
 <script>
-    function AddRow() {
+    document.addEventListener("DOMContentLoaded", UpdateSelect);
+    function AddRow(criteria = "", weight = 1) {
         var countVal = parseInt($('#CriteriasList').attr('data-count'));
         countVal += 1;
         var html = '';
         html += '<tr id="element-' + countVal + '">';
-        html += '<td><input id="elementCriteria" type="text" name="criterias[' + countVal + '].Key" class="form-control" required/></td>';
-        html += '<td><input id="elementWeight" type="text" inputmode="numeric" pattern="[0-9]+([,][0-9]+)?" name="criterias[' + countVal + '].Value" value="1" class="form-control" step="0.05" min=0 required/></td>';
+        html += '<td><input id="elementCriteria" type="text" name="criterias[' + countVal + '].Key" value="' + criteria + '" class="form-control" required/></td>';
+        html += '<td><input id="elementWeight" type="text" inputmode="numeric" pattern="[0-9]+([,][0-9]+)?" name="criterias[' + countVal + '].Value" value="' + weight + '" class="form-control" step="0.05" min=0 required/></td>';
         html += '<td><button id="elementDelete" type="button" class="btn" onclick="DeleteRow(' + countVal + ')">X</button></td>';
         html += '</tr>';
         $('#CriteriasList').append(html);
         $('#CriteriasList').attr('data-count', countVal);
     }
+
     function DeleteRow(id) {
         var countVal = parseInt($('#CriteriasList').attr('data-count'));
         if (countVal != -1) {
-            if ($('#element-' + id).find('#elementId').attr('value') != undefined) {$('#submitButton').attr('value'
-                $('#submitButton').attr('value', $('#submitButton').attr('value') + ',' + $('#element-' + id).find('#elementId').attr('value'));
+            if ($('#element-' + id).find('#elementId').attr('value') != undefined) {
+                $('#submitButton').attr('value', $('#submitButton').attr('value', $('#submitButton').attr('value') + ',' + $('#element-' + id).find('#elementId').attr('value')));
             }
             $('#element-' + id).remove();
             for (i = id + 1; i < countVal + 1; i++) {
@@ -97,5 +110,100 @@
                 AddRow()
             }
         }
+    }
+
+    function CreateNewTemplate() {
+        var countVal = parseInt($('#CriteriasList').attr('data-count'));
+        var resultString = $('#templateName').val() + ">"
+        for (let i = 0; i <= countVal; i++) {
+            resultString += $('#element-' + i).find('#elementCriteria').val() + ":" + $('#element-' + i).find('#elementWeight').val()
+            if (i != countVal) {
+                resultString += "~"
+            }
+        }
+        CookieAppend(resultString)
+        UpdateSelect()
+    }
+
+    function DeleteTemplate() {
+        let cookieValue = getCookie("templates")
+        let substring = $('#templates option:selected').html() + '>' + $('#templates').val()
+        cookieValue = cookieValue.replace(substring + '/', '')
+        cookieValue = cookieValue.replace(substring, '')
+        cookieValue = cookieValue.replace('//', '/')
+        deleteCookie("templates")
+        setCookie("templates", cookieValue)
+        let elementsToRemove = document.querySelectorAll("#savedTemplate");
+        elementsToRemove.forEach(x => {
+            x.parentNode.removeChild(x);
+        });
+        UpdateSelect()
+    }
+
+    function TemplateChanged() {
+        ApplyTemplate($('#templates').val())
+    }
+
+    function UpdateSelect() {
+        let cookieValue = getCookie("templates")
+        if (cookieValue != "") {
+            let options = cookieValue.split('/')
+            let elementsToRemove = document.querySelectorAll("#savedTemplate");
+            elementsToRemove.forEach(x => {
+                x.parentNode.removeChild(x);
+            });
+            for (let i = 0; i < options.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = options[i].split('>')[1]
+                opt.innerHTML = options[i].split('>')[0]
+                opt.id = "savedTemplate"
+                document.getElementById('templates').appendChild(opt)
+            }
+        }
+    }
+
+    function ApplyTemplate(template) {
+        valuePairs = template.split('~')
+        $('#CriteriasList').attr('data-count', -1);
+        $("#CriteriasList").empty()
+        valuePairs.forEach((x) => {
+            AddRow(x.split(':')[0], x.split(':')[1])
+        })
+
+    }
+
+    function CookieAppend(value) {
+        let cookieValue = getCookie("templates")
+        if (cookieValue != "") {
+            deleteCookie("templates")
+            setCookie("templates", cookieValue + "/" + value)
+        }
+        else {
+            setCookie("templates", value)
+        }
+    }
+
+    function setCookie(cname, cvalue) {
+        document.cookie = cname + "=" + cvalue + ";path=/";
+    }
+
+    function deleteCookie(cname) {
+        document.cookie = cname + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
+
+    function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for (let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
     }
 </script>

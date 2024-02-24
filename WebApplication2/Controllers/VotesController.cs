@@ -84,11 +84,12 @@ namespace WebApplication2.Controllers
                         _context.SaveChanges();
                     }
                     
-                    foreach (string x in votingEvent.Criterias.Split(';'))
+                    foreach (string x in votingEvent.Criterias.Split('~'))
                     {
                         string[] tempStr = x.Split(':');
                         criterias.Add(new KeyValuePair<string, double>(tempStr[0], Convert.ToDouble(tempStr[1])));
                     }
+                    ViewData["votingCriteriasString"] = votingEvent.Criterias;
                     ViewData["votingCriterias"] = criterias;
                     return View("VoteCriteriasEdit");
                 }
@@ -117,7 +118,7 @@ namespace WebApplication2.Controllers
                     {
                         if (count > 0)
                         {
-                            stringCriterias += ";";
+                            stringCriterias += "~";
                         }
                         stringCriterias += x.Key + ":" + x.Value;
                         count++;
